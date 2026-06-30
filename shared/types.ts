@@ -1,0 +1,286 @@
+export type Theme = 'light' | 'dark' | 'minimal';
+export type Layout = 'grid' | 'list' | 'masonry';
+export type ExperienceType = 'work' | 'education';
+export type ProjectStatus = 'draft' | 'published' | 'archived';
+export type PostStatus = 'draft' | 'published';
+export type VideoPlatform = 'youtube' | 'vimeo' | 'bilibili' | 'custom';
+
+export interface User {
+  id?: number;
+  email: string;
+  username: string;
+  displayName: string;
+  avatarUrl?: string;
+  title?: string;
+  bio?: string;
+  fullBio?: string;
+  location?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface ProjectImage {
+  id?: number;
+  projectId?: number;
+  imageUrl: string;
+  caption?: string;
+  displayOrder: number;
+  isCover: boolean;
+}
+
+export interface Project {
+  id?: number;
+  userId?: number;
+  title: string;
+  slug: string;
+  category: string;
+  coverImage: string;
+  description: string;
+  content: string;
+  role?: string;
+  tools?: string;
+  projectUrl?: string;
+  githubUrl?: string;
+  startDate?: string;
+  endDate?: string;
+  displayOrder: number;
+  isFeatured: boolean;
+  viewCount: number;
+  status: ProjectStatus;
+  createdAt?: string;
+  updatedAt?: string;
+  publishedAt?: string;
+  images?: ProjectImage[];
+}
+
+export interface Experience {
+  id?: number;
+  userId?: number;
+  type: ExperienceType;
+  company: string;
+  position: string;
+  description?: string;
+  startDate: string;
+  endDate?: string;
+  isCurrent: boolean;
+  displayOrder: number;
+}
+
+export interface Skill {
+  id?: number;
+  userId?: number;
+  name: string;
+  category?: string;
+  proficiency: 1 | 2 | 3 | 4 | 5;
+  displayOrder: number;
+}
+
+export interface SocialLink {
+  id?: number;
+  userId?: number;
+  platform: string;
+  url: string;
+  icon?: string;
+  displayOrder: number;
+}
+
+export interface BlogPost {
+  id?: number;
+  userId?: number;
+  title: string;
+  slug: string;
+  excerpt?: string;
+  content: string;
+  coverImage?: string;
+  tags: string[];
+  viewCount: number;
+  status: PostStatus;
+  createdAt?: string;
+  updatedAt?: string;
+  publishedAt?: string;
+}
+
+export interface VideoItem {
+  id?: number;
+  userId?: number;
+  title: string;
+  platform: VideoPlatform;
+  videoUrl: string;
+  thumbnailUrl?: string;
+  description?: string;
+  displayOrder: number;
+  isFeatured: boolean;
+}
+
+export interface SiteConfig {
+  userId?: number;
+  theme: Theme;
+  primaryColor: string;
+  layout: Layout;
+  showBlog: boolean;
+  showExperience: boolean;
+  showSkills: boolean;
+  showVideos: boolean;
+  customCss?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  domain?: string;
+  updatedAt?: string;
+}
+
+export interface SiteData {
+  user: User;
+  projects: Project[];
+  experiences: Experience[];
+  skills: Skill[];
+  socialLinks: SocialLink[];
+  blogPosts: BlogPost[];
+  videos: VideoItem[];
+  config: SiteConfig;
+}
+
+export type AIAction =
+  | { action: 'updateUser'; field: keyof User; value: unknown }
+  | { action: 'addProject'; project: Partial<Project> }
+  | { action: 'updateProject'; id: number; fields: Partial<Project> }
+  | { action: 'deleteProject'; id: number }
+  | { action: 'addExperience'; experience: Partial<Experience> }
+  | { action: 'updateExperience'; id: number; fields: Partial<Experience> }
+  | { action: 'deleteExperience'; id: number }
+  | { action: 'addSkill'; skill: Partial<Skill> }
+  | { action: 'updateSkill'; id: number; fields: Partial<Skill> }
+  | { action: 'deleteSkill'; id: number }
+  | { action: 'addSocialLink'; social: Partial<SocialLink> }
+  | { action: 'updateSocialLink'; id: number; fields: Partial<SocialLink> }
+  | { action: 'deleteSocialLink'; id: number }
+  | { action: 'addVideo'; video: Partial<VideoItem> }
+  | { action: 'updateVideo'; id: number; fields: Partial<VideoItem> }
+  | { action: 'deleteVideo'; id: number }
+  | { action: 'updateConfig'; fields: Partial<SiteConfig> };
+
+export interface AIChatRequest {
+  message: string;
+  currentData: SiteData;
+}
+
+export interface AIChatResponse {
+  reply: string;
+  actions: AIAction[];
+}
+
+export const defaultUser: User = {
+  email: '',
+  username: 'creator',
+  displayName: '你的名字',
+  avatarUrl: 'https://i.pravatar.cc/300?img=11',
+  title: '设计师 / 开发者',
+  bio: '用创意和技术构建美好数字体验',
+  fullBio: '我是一名热爱设计和开发的全栈创作者，致力于打造优雅、实用的数字产品。',
+  location: '中国 · 杭州'
+};
+
+export const defaultConfig: SiteConfig = {
+  theme: 'light',
+  primaryColor: '#3b0764',
+  layout: 'grid',
+  showBlog: false,
+  showExperience: true,
+  showSkills: true,
+  showVideos: true,
+  seoTitle: '',
+  seoDescription: ''
+};
+
+export const defaultSiteData: SiteData = {
+  user: defaultUser,
+  projects: [
+    {
+      id: 1,
+      title: 'Vortex Quantum Dashboard',
+      slug: 'vortex-quantum-dashboard',
+      category: 'Creative Engineering',
+      coverImage: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80',
+      description: '一套面向实时数据可视化的沉浸式仪表盘体验。',
+      content: 'Web3D telemetry platform with polished motion, dashboard primitives, and responsive layouts.',
+      role: 'Product Designer / Frontend',
+      tools: 'React, Three.js, Figma',
+      projectUrl: '#',
+      githubUrl: 'https://github.com',
+      startDate: '2025-01',
+      endDate: '2025-04',
+      displayOrder: 0,
+      isFeatured: true,
+      viewCount: 0,
+      status: 'published',
+      images: [
+        {
+          id: 1,
+          imageUrl: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=900&q=80',
+          caption: 'Interface system overview',
+          displayOrder: 0,
+          isCover: false
+        },
+        {
+          id: 2,
+          imageUrl: 'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=900&q=80',
+          caption: 'Motion and dashboard details',
+          displayOrder: 1,
+          isCover: false
+        }
+      ]
+    },
+    {
+      id: 2,
+      title: 'Aether Brand System',
+      slug: 'aether-brand-system',
+      category: 'Identity System',
+      coverImage: 'https://images.unsplash.com/photo-1618005198143-e5283b519a7f?auto=format&fit=crop&w=900&q=80',
+      description: '为高端数字产品打造的品牌视觉和组件系统。',
+      content: 'Luxury identity direction, component rules, and web-ready visual language.',
+      role: 'Brand Designer',
+      tools: 'Figma, Photoshop',
+      projectUrl: '#',
+      startDate: '2024-08',
+      endDate: '2024-11',
+      displayOrder: 1,
+      isFeatured: false,
+      viewCount: 0,
+      status: 'published'
+    }
+  ],
+  experiences: [
+    {
+      id: 1,
+      type: 'work',
+      company: 'Independent Studio',
+      position: 'Creative Technologist',
+      description: '为早期团队和个人品牌构建高质量网站、设计系统和交互动效。',
+      startDate: '2022-01',
+      isCurrent: true,
+      displayOrder: 0
+    }
+  ],
+  skills: [
+    { id: 1, name: 'Figma', category: 'Design', proficiency: 5, displayOrder: 0 },
+    { id: 2, name: 'React', category: 'Frontend', proficiency: 5, displayOrder: 1 },
+    { id: 3, name: 'Motion Design', category: 'Interaction', proficiency: 4, displayOrder: 2 }
+  ],
+  socialLinks: [
+    { id: 1, platform: 'GitHub', url: 'https://github.com', icon: 'github', displayOrder: 0 },
+    { id: 2, platform: 'LinkedIn', url: 'https://linkedin.com', icon: 'linkedin', displayOrder: 1 }
+  ],
+  blogPosts: [],
+  videos: [
+    {
+      id: 1,
+      title: 'Portfolio Walkthrough',
+      platform: 'youtube',
+      videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      thumbnailUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80',
+      description: 'A short walkthrough of the design system, portfolio structure, and interaction direction.',
+      displayOrder: 0,
+      isFeatured: true
+    }
+  ],
+  config: defaultConfig
+};

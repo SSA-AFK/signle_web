@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snowly - Advanced Digital Snow Removal Platform</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- AOS Animation Library -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#16022b',     
+              purple: '#3b0764',   
+              medium: '#581c87',   
+              light: '#7e22ce',    
+              bg: '#fafbfe',       
+            }
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #3b0764;
+      border-radius: 3px;
+    }
+    
+    /* 导航栏滑出下划线动效 */
+    .nav-link {
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: #3b0764;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    /* 自定义 Slider 轨道与滑块精致悬浮样式 */
+    input[type="range"]::-webkit-slider-thumb {
+      background-color: #3b0764;
+      border: 2.5px solid white;
+      box-shadow: 0 4px 10px rgba(59, 7, 100, 0.2);
+      transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+    }
+  </style>
+</head>
+<body class="bg-brand-bg text-slate-800 font-sans antialiased overflow-x-hidden custom-scrollbar">
+
+  <!-- 1. Pure White Navigation Bar -->
+  <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100/80 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 md:px-8 py-4 flex justify-between items-center">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2 group">
+        <div class="w-10 h-10 rounded-xl bg-brand-purple flex items-center justify-center text-white font-black text-xl shadow-md shadow-purple-950/10 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
+          ❄
+        </div>
+        <span class="font-extrabold text-2xl tracking-tight text-brand-dark group-hover:text-brand-purple transition-colors duration-300">Snowly</span>
+      </a>
+
+      <!-- Navigation Links -->
+      <div class="hidden md:flex items-center gap-8 font-semibold text-slate-500 text-sm">
+        <a href="#" class="nav-link text-brand-purple">Home</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#pricing-calculator" class="nav-link">Price Estimator</a>
+        <a href="#before-after" class="nav-link">Before & After</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </div>
+
+      <!-- Action & Social Mix -->
+      <div class="hidden lg:flex items-center gap-6">
+        <div class="flex items-center gap-2.5 border-r border-slate-100 pr-5">
+          <a href="#" class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-brand-purple hover:text-white hover:scale-110 active:scale-95 transition-all duration-300"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+          <a href="#" class="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-brand-purple hover:text-white hover:scale-110 active:scale-95 transition-all duration-300"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+        </div>
+        
+        <div class="flex items-center gap-3 group">
+          <div class="text-right">
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Call Priority</p>
+            <p class="text-sm font-extrabold text-brand-dark group-hover:text-brand-purple transition-colors duration-300">(785) 712-6532</p>
+          </div>
+          <a href="tel:7857126532" class="w-10 h-10 rounded-full bg-brand-purple flex items-center justify-center text-white hover:bg-brand-medium hover:scale-110 hover:shadow-lg hover:shadow-purple-900/20 active:scale-95 transition-all duration-300">
+            <i data-lucide="phone" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- 2. Hero Section (配置了鼠标悬浮感知 ID: hero-section) -->
+  <section id="hero-section" class="relative min-h-[650px] lg:h-[82vh] flex items-center overflow-hidden bg-slate-900">
+    
+    <!-- Background Carousel (渐隐渐现背景轮播图组) -->
+    <div class="absolute inset-0 z-0">
+      <!-- Slide 1 (Active) -->
+      <div class="hero-slide absolute inset-0 opacity-100 transition-opacity duration-1000 ease-in-out">
+        <img src="https://images.unsplash.com/photo-1612240498936-65f5101365d2?auto=format&fit=crop&w=1920&q=80" alt="Snow plowing tractor" class="w-full h-full object-cover object-center">
+      </div>
+      <!-- Slide 2 -->
+      <div class="hero-slide absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out">
+        <img src="https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=1920&q=80" alt="Snow blowers on path" class="w-full h-full object-cover object-center">
+      </div>
+      <!-- Slide 3 -->
+      <div class="hero-slide absolute inset-0 opacity-0 transition-opacity duration-1000 ease-in-out">
+        <img src="https://images.unsplash.com/photo-1482862549707-f63cb32c5fd9?auto=format&fit=crop&w=1920&q=80" alt="Truck clearing road in blizzard" class="w-full h-full object-cover object-center">
+      </div>
+      <!-- Ambient Dark Overlay -->
+      <div class="absolute inset-0 bg-gradient-to-r from-brand-dark/95 via-brand-dark/40 to-transparent"></div>
+    </div>
+
+    <!-- Hero Content -->
+    <div class="relative z-10 max-w-7xl mx-auto px-4 md:px-8 w-full py-16 lg:py-0 pb-28 lg:pb-24">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div data-aos="fade-right" class="lg:col-span-6 bg-brand-purple/95 text-white p-8 md:p-12 rounded-3xl shadow-2xl border border-white/10 backdrop-blur-sm">
+          <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full mb-6 border border-white/10">
+            <span class="text-amber-400 font-bold text-sm">★ 5.0</span>
+            <span class="text-white/80 text-xs font-medium">(500+ Google Reviews)</span>
+          </div>
+          
+          <h1 class="text-3xl md:text-5xl font-black leading-tight mb-4 tracking-tight">
+            From Driveway to Parking Lots Keep You Snow Free
+          </h1>
+          <p class="text-white/80 text-sm md:text-base leading-relaxed mb-8 font-light">
+            Don't let snowstorms slow you down! Our professional snow removal team is here to keep your driveway, sidewalks, and parking areas safe & accessible.
+          </p>
+          
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="#pricing-calculator" class="px-6 py-3.5 bg-white text-brand-purple font-bold text-sm rounded-xl text-center shadow-lg hover:bg-slate-50 hover:scale-105 active:scale-95 transition-all duration-300">
+              Get Instant Quote
+            </a>
+            <a href="#before-after" class="px-6 py-3.5 bg-brand-dark/40 text-white font-bold text-sm rounded-xl text-center border border-white/20 hover:bg-brand-dark/60 hover:scale-105 transition-all duration-300">
+              See Before/After
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 轮播图指示器小圆点 (左下角 - 带有精致的过渡拉伸动画) -->
+    <div class="absolute bottom-28 left-4 md:left-8 z-20 flex items-center gap-2">
+      <button class="carousel-dot w-8 h-2 rounded-full bg-white transition-all duration-300" data-slide="0" aria-label="Slide 1"></button>
+      <button class="carousel-dot w-2 h-2 rounded-full bg-white/40 hover:bg-white/70 transition-all duration-300" data-slide="1" aria-label="Slide 2"></button>
+      <button class="carousel-dot w-2 h-2 rounded-full bg-white/40 hover:bg-white/70 transition-all duration-300" data-slide="2" aria-label="Slide 3"></button>
+    </div>
+
+    <!-- 轮播图物理控制按钮 (右下角) -->
+    <div class="absolute bottom-28 right-4 md:right-8 z-20 flex items-center gap-2.5">
+      <button id="prev-slide" class="w-12 h-12 rounded-xl bg-brand-purple/80 hover:bg-brand-purple text-white flex items-center justify-center border border-white/10 hover:scale-110 hover:shadow-xl hover:shadow-purple-950/40 active:scale-95 transition-all duration-300">
+        <i data-lucide="chevron-left" class="w-5 h-5"></i>
+      </button>
+      <button id="next-slide" class="w-12 h-12 rounded-xl bg-brand-purple/80 hover:bg-brand-purple text-white flex items-center justify-center border border-white/10 hover:scale-110 hover:shadow-xl hover:shadow-purple-950/40 active:scale-95 transition-all duration-300">
+        <i data-lucide="chevron-right" class="w-5 h-5"></i>
+      </button>
+    </div>
+
+    <!-- 底部半透明毛玻璃信息条 -->
+    <div class="absolute bottom-0 left-0 right-0 z-10 bg-black/45 backdrop-blur-lg border-t border-white/10 py-5 px-4 md:px-8">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-5 text-xs text-white/95">
+        <div class="flex flex-wrap justify-center gap-6 md:gap-8">
+          <span class="flex items-center gap-2.5 hover:text-purple-300 transition-colors duration-300 group cursor-pointer">
+            <i data-lucide="map-pin" class="w-4 h-4 text-purple-400 group-hover:scale-110 group-hover:rotate-6 transition-all"></i>
+            657 Twin Lakes Drive, Reno, NV 89523
+          </span>
+          <span class="flex items-center gap-2.5 hover:text-purple-300 transition-colors duration-300 group cursor-pointer">
+            <i data-lucide="mail" class="w-4 h-4 text-purple-400 group-hover:scale-110 transition-all"></i>
+            info@Snowly.com
+          </span>
+        </div>
+        
+        <div class="flex flex-wrap items-center gap-4">
+          <div class="flex items-center gap-2 bg-white/10 px-3.5 py-1.5 rounded-full border border-white/15">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="text-white/90 font-medium">Reno Weather: <span class="text-white font-bold">24°F ❄️ Light Snow</span></span>
+          </div>
+          <div class="flex items-center gap-2 bg-purple-500/20 px-3.5 py-1.5 rounded-full border border-purple-400/30 text-purple-200">
+            <i data-lucide="truck" class="w-4 h-4 animate-bounce"></i>
+            <span>Plow Fleet: <strong class="text-white">Active</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. About Us Section -->
+  <section id="about" class="py-20 md:py-28 px-4 md:px-8 max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
+      <div class="max-w-xl" data-aos="fade-up">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-brand-purple font-extrabold text-xs tracking-wider uppercase rounded-full mb-4">
+          ❄ About Us
+        </span>
+        <h2 class="text-3xl md:text-4xl font-black text-brand-dark leading-tight">
+          Trusted Experts Delivering Winter Safety And Peace
+        </h2>
+      </div>
+      <a href="#contact" data-aos="fade-left" class="inline-flex items-center gap-2 px-6 py-3.5 bg-brand-purple hover:bg-brand-medium hover:scale-105 hover:shadow-lg hover:shadow-purple-900/10 text-white text-sm font-bold rounded-xl active:scale-95 transition-all duration-300">
+        Book Inspection
+        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <div class="lg:col-span-5 space-y-8" data-aos="fade-right">
+        <div class="grid grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 hover:border-purple-200/50 transition-all duration-300 group">
+            <p class="text-4xl md:text-5xl font-black text-brand-purple mb-1 group-hover:scale-105 transition-transform duration-300 inline-block">15+</p>
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Years Of Experience</p>
+          </div>
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-lg hover:-translate-y-1 hover:border-purple-200/50 transition-all duration-300 group">
+            <p class="text-4xl md:text-5xl font-black text-brand-purple mb-1 group-hover:scale-105 transition-transform duration-300 inline-block">1500+</p>
+            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Projects Completed</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="flex gap-4 p-5 bg-white rounded-2xl border border-slate-100 hover:shadow-md hover:border-purple-100 transition-all duration-300">
+            <div class="w-12 h-12 shrink-0 rounded-xl bg-purple-50 flex items-center justify-center text-brand-purple">
+              <i data-lucide="snowflake" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <h4 class="font-bold text-brand-dark mb-1">More Than Just Snow Removal</h4>
+              <p class="text-xs text-slate-500 leading-relaxed">
+                We combine speed with thorough sweep checks, leaving your commercial or residential walkways 100% ice-free.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Before & After Dynamic Slider -->
+      <div class="lg:col-span-7" id="before-after" data-aos="fade-left">
+        <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+          <div class="flex justify-between items-center mb-4">
+            <h3 class="font-bold text-brand-dark text-lg flex items-center gap-2">
+              <i data-lucide="sparkles" class="w-5 h-5 text-brand-purple animate-pulse"></i>
+              Interactive Before/After Results
+            </h3>
+            <span class="text-xs bg-slate-100 text-slate-500 font-semibold px-2.5 py-1 rounded-full">Slide to Inspect</span>
+          </div>
+
+          <!-- Slider Container -->
+          <div class="relative w-full h-[380px] rounded-2xl overflow-hidden select-none shadow-inner bg-slate-800">
+            <!-- 'Before' image -->
+            <img data-src="https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?auto=format&fit=crop&w=1000&q=80" 
+                 src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 380'%3E%3Crect width='100%25' height='100%25' fill='%23e2e8f0'/%3E%3C/svg%3E"
+                 alt="Driveway Before" 
+                 loading="lazy"
+                 class="lazy-image absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+            <div class="absolute bottom-4 left-4 bg-red-600/90 text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md z-10">Before</div>
+
+            <!-- 'After' image -->
+            <div id="after-wrapper" class="absolute inset-0 w-full h-full overflow-hidden pointer-events-none" style="clip-path: inset(0 50% 0 0);">
+              <img data-src="https://images.unsplash.com/photo-1482862549707-f63cb32c5fd9?auto=format&fit=crop&w=1000&q=80" 
+                   src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 380'%3E%3Crect width='100%25' height='100%25' fill='%23e2e8f0'/%3E%3C/svg%3E"
+                   alt="Driveway After" 
+                   loading="lazy"
+                   class="lazy-image absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000">
+              <div class="absolute bottom-4 right-4 bg-emerald-600/90 text-white font-extrabold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-md z-10">After</div>
+            </div>
+
+            <!-- Handle / Overlay Input for control -->
+            <input type="range" min="0" max="100" value="50" id="slider-range" class="absolute inset-0 w-full h-full opacity-0 cursor-ew-resize z-20">
+            
+            <!-- Separating Bar Line -->
+            <div id="slider-bar" class="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize z-10 pointer-events-none shadow-[0_0_10px_rgba(0,0,0,0.5)]" style="left: 50%;">
+              <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-brand-purple text-white shadow-xl flex items-center justify-center border-2 border-white text-sm">
+                ↔
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Live Cost Estimator Section -->
+  <section id="pricing-calculator" class="bg-gradient-to-b from-slate-100 to-white py-20 px-4 md:px-8 border-y border-slate-200/50">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <!-- Calculator Column -->
+      <div class="lg:col-span-6 bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-slate-100" data-aos="fade-right">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-brand-purple font-extrabold text-xs tracking-wider uppercase rounded-full mb-4">
+          ❄ Smart Estimate
+        </span>
+        <h3 class="text-2xl font-black text-brand-dark mb-2">Instant Price Calculator</h3>
+        <p class="text-xs text-slate-500 mb-8">Get an immediate, transparent estimation based on your specific property configuration.</p>
+
+        <div class="space-y-6">
+          <!-- Parameter 1: Driveway Size -->
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Driveway/Area Size</label>
+              <span id="size-val" class="text-sm font-black text-brand-purple bg-purple-50 px-2.5 py-0.5 rounded-full transition-all duration-300">500 Sq Ft</span>
+            </div>
+            <input type="range" id="size-input" min="100" max="2500" step="50" value="500" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer transition-all duration-300">
+            <div class="flex justify-between text-[10px] text-slate-400 mt-1.5">
+              <span>Single Car (100 Sq Ft)</span>
+              <span>Large Parking Lot (2500 Sq Ft)</span>
+            </div>
+          </div>
+
+          <!-- Parameter 2: Snow Depth -->
+          <div>
+            <div class="flex justify-between items-center mb-2">
+              <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">Snow Accumulation Depth</label>
+              <span id="depth-val" class="text-sm font-black text-brand-purple bg-purple-50 px-2.5 py-0.5 rounded-full transition-all duration-300">4 Inches</span>
+            </div>
+            <input type="range" id="depth-input" min="1" max="15" step="1" value="4" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer transition-all duration-300">
+            <div class="flex justify-between text-[10px] text-slate-400 mt-1.5">
+              <span>Light Dusting (1")</span>
+              <span>Heavy Blizzard (15"+)</span>
+            </div>
+          </div>
+
+          <!-- Parameter 3: Service Class -->
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Service Response Priority</label>
+            <div class="grid grid-cols-2 gap-4">
+              <label class="relative border-2 border-slate-100 rounded-2xl p-4 flex flex-col gap-1 cursor-pointer hover:border-purple-300 hover:bg-purple-50/20 transition-all duration-300" id="label-standard">
+                <input type="radio" name="priority" value="standard" checked class="absolute right-4 top-4 accent-brand-purple">
+                <span class="font-bold text-sm text-brand-dark">Standard</span>
+                <span class="text-[10px] text-slate-400">Within 12 Hours</span>
+              </label>
+              <label class="relative border-2 border-slate-100 rounded-2xl p-4 flex flex-col gap-1 cursor-pointer hover:border-red-200 hover:bg-red-50/10 transition-all duration-300" id="label-emergency">
+                <input type="radio" name="priority" value="emergency" class="absolute right-4 top-4 accent-brand-purple">
+                <span class="font-bold text-sm text-brand-dark text-red-600 flex items-center gap-1">
+                  🚨 Emergency
+                </span>
+                <span class="text-[10px] text-slate-400">Within 2 Hours</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Card Column -->
+      <div class="lg:col-span-6 space-y-6" data-aos="fade-left">
+        <div class="bg-brand-dark text-white p-8 md:p-10 rounded-3xl shadow-xl relative overflow-hidden">
+          <div class="absolute -right-16 -top-16 w-44 h-44 bg-purple-800/20 rounded-full blur-2xl"></div>
+
+          <h4 class="font-bold text-white/60 text-xs uppercase tracking-widest mb-2">Estimated Service Pricing</h4>
+          <div class="flex items-baseline gap-2 mb-6">
+            <span class="text-5xl md:text-6xl font-black text-white transition-all duration-300" id="calc-price">$120.00</span>
+            <span class="text-xs text-slate-400">/ One-time Clearance</span>
+          </div>
+
+          <ul class="space-y-3.5 border-t border-white/10 pt-6 mb-8 text-xs text-white/80">
+            <li class="flex justify-between">
+              <span>Anti-ice pre-salting formulation:</span>
+              <strong class="text-emerald-400">INCLUDED (Free)</strong>
+            </li>
+            <li class="flex justify-between">
+              <span>Post-shoveling sweep & quality check:</span>
+              <strong class="text-emerald-400">INCLUDED (Free)</strong>
+            </li>
+          </ul>
+
+          <!-- 跨组件绑定触发按钮 -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button onclick="lockInPrice()" class="w-full py-4 bg-brand-purple text-white text-center text-xs font-extrabold rounded-xl hover:bg-brand-medium hover:scale-[1.02] hover:shadow-xl active:scale-95 border border-white/10 transition-all duration-300">
+              Lock In This Price Now (一键锁定报价并填写表单)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Contact Us Section -->
+  <section id="contact" class="py-20 md:py-28 px-4 md:px-8 bg-slate-50">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-16">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-100 text-brand-purple font-extrabold text-xs tracking-wider uppercase rounded-full mb-4">
+          ❄ Service Contact
+        </span>
+        <h2 class="text-3xl md:text-4xl font-black text-brand-dark">
+          Schedule Your Priority Dispatch Today
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <!-- Form Block -->
+        <div class="lg:col-span-7 bg-white p-8 md:p-10 rounded-2xl shadow-lg border border-slate-100" data-aos="fade-right">
+          <form class="space-y-6" onsubmit="event.preventDefault(); alert('We have received your request. A dispatch specialist will call you shortly!');">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Your Name*</label>
+                <input type="text" placeholder="Johan Smit" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-purple focus:bg-white text-sm transition-all duration-300">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Email address*</label>
+                <input type="email" placeholder="info@Snowly.com" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-purple focus:bg-white text-sm transition-all duration-300">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Phone number*</label>
+                <input type="tel" placeholder="775-329-1531" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-purple focus:bg-white text-sm transition-all duration-300">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Select Service Level</label>
+                <select class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-purple focus:bg-white text-sm transition-all duration-300 text-slate-500">
+                  <option value="one-time">One-Time On-Demand Clearing</option>
+                  <option value="seasonal">Full-Season Unlimited Plan</option>
+                  <option value="commercial">Commercial Ice & Snow Contract</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 数据被写入的 Textarea -->
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Message & Notes</label>
+              <textarea id="form-message" rows="6" placeholder="Mention any specific instructions or obstacles we should avoid" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-purple focus:bg-white text-sm transition-all duration-300"></textarea>
+            </div>
+
+            <button type="submit" class="w-full py-4 bg-brand-purple hover:bg-brand-medium hover:scale-[1.01] hover:shadow-xl text-white font-extrabold text-sm rounded-xl active:scale-95 transition-all duration-300">
+              Submit Request
+            </button>
+          </form>
+        </div>
+
+        <!-- Info Block -->
+        <div class="lg:col-span-5 space-y-6" data-aos="fade-left">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Address Card -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-100 flex items-start gap-3.5 hover:shadow-lg hover:border-purple-200/50 hover:-translate-y-0.5 transition-all duration-300">
+              <div class="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-brand-purple shrink-0"><i data-lucide="map-pin" class="w-5 h-5"></i></div>
+              <div>
+                <p class="text-xs font-bold text-slate-400">Address</p>
+                <p class="text-xs font-semibold text-brand-dark mt-0.5">421 Allen, Mexico 4233</p>
+              </div>
+            </div>
+
+            <!-- Mobile Card -->
+            <div class="bg-brand-purple text-white p-5 rounded-2xl flex items-start gap-3.5 shadow-lg shadow-purple-950/15 hover:scale-[1.05] hover:shadow-xl hover:shadow-purple-950/20 active:scale-95 transition-all duration-300">
+              <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0"><i data-lucide="phone-call" class="w-5 h-5"></i></div>
+              <div>
+                <p class="text-xs text-white/60 font-semibold">Mobile</p>
+                <p class="text-xs font-bold mt-0.5">123 456 7890</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Emergency Callout Strip -->
+  <section class="bg-brand-purple text-white py-12 px-4 md:px-8">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="flex items-center gap-4 text-center md:text-left">
+        <div class="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center shrink-0 hidden sm:flex">
+          <i data-lucide="alert-triangle" class="w-7 h-7 text-amber-300"></i>
+        </div>
+        <div>
+          <h2 class="text-xl md:text-2xl font-black">Stay Safe This Winter Let Us Handle the Snow</h2>
+          <p class="text-xs text-white/75 mt-1 font-light">Contact our 24/7 snow emergency response team anytime.</p>
+        </div>
+      </div>
+      
+      <a href="tel:9195558247" class="flex items-center gap-3.5 bg-white text-brand-dark px-6 py-3.5 rounded-2xl shadow-xl hover:scale-105 hover:shadow-2xl transition-all duration-300">
+        <span class="w-10 h-10 rounded-xl bg-brand-purple flex items-center justify-center text-white shrink-0">
+          <i data-lucide="phone-call" class="w-4 h-4"></i>
+        </span>
+        <div>
+          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Call For Emergency</p>
+          <p class="text-sm font-black text-brand-dark">919-555-8247</p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- 7. Footer -->
+  <footer class="bg-brand-dark text-slate-300 pt-16 pb-8 px-4 md:px-8 border-t border-purple-950/20">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-12">
+      <div class="lg:col-span-4 space-y-6">
+        <a href="#" class="flex items-center gap-2">
+          <div class="w-10 h-10 rounded-xl bg-brand-purple flex items-center justify-center text-white font-black text-xl">❄</div>
+          <span class="font-extrabold text-2xl tracking-tight text-white">Snowly</span>
+        </a>
+        <p class="text-xs text-slate-400 leading-relaxed max-w-sm">
+          At Snowly, we specialize in professional snow removal and ice management services. Our mission is to keep your property safe and worry-free.
+        </p>
+      </div>
+
+      <div class="lg:col-span-4 space-y-4">
+        <h4 class="font-bold text-white text-sm">Quick Links</h4>
+        <div class="flex flex-col gap-2 text-xs">
+          <a href="#" class="hover:text-purple-400 transition-colors duration-300">Home</a>
+          <a href="#about" class="hover:text-purple-400 transition-colors duration-300">About Us</a>
+          <a href="#pricing-calculator" class="hover:text-purple-400 transition-colors duration-300">Price Estimator</a>
+          <a href="#contact" class="hover:text-purple-400 transition-colors duration-300">Contact Us</a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-4 space-y-4">
+        <h4 class="font-bold text-white text-sm">Contact Us</h4>
+        <div class="flex flex-col gap-3 text-xs">
+          <span class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4 text-purple-400"></i> 123 456 7890</span>
+          <span class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4 text-purple-400"></i> info@Snowly.com</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto pt-8 border-t border-slate-800 text-center text-[11px] text-slate-500">
+      <p>© Copyright 2026 - Snowly. All Right Reserved</p>
+    </div>
+  </footer>
+
+  <!-- AOS Scroll Animation JS -->
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    lucide.createIcons();
+    AOS.init({ duration: 900, once: true });
+
+    /* =============================================================
+       高级自动轮播逻辑 (Carousel with Pause-on-Hover & Dots Indicator)
+       ============================================================= */
+    const slides = document.querySelectorAll('.hero-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const prevBtn = document.getElementById('prev-slide');
+    const nextBtn = document.getElementById('next-slide');
+    const heroSection = document.getElementById('hero-section');
+    
+    let currentSlide = 0;
+    let slideInterval;
+    const intervalTime = 5000; // 每 5 秒自动切换一次
+
+    // 更新底部指示点圆点样式
+    function updateIndicators() {
+      dots.forEach((dot, idx) => {
+        if (idx === currentSlide) {
+          // 当前活动项：伸长为胶囊状并高亮
+          dot.classList.remove('w-2', 'bg-white/40');
+          dot.classList.add('w-8', 'bg-white');
+        } else {
+          // 非活动项：缩回小圆点
+          dot.classList.remove('w-8', 'bg-white');
+          dot.classList.add('w-2', 'bg-white/40');
+        }
+      });
+    }
+
+    // 切换到指定幻灯片
+    function showSlide(index) {
+      slides[currentSlide].classList.remove('opacity-100');
+      slides[currentSlide].classList.add('opacity-0');
+      
+      currentSlide = (index + slides.length) % slides.length;
+      
+      slides[currentSlide].classList.remove('opacity-0');
+      slides[currentSlide].classList.add('opacity-100');
+      
+      updateIndicators();
+    }
+
+    function handleNextSlide() {
+      showSlide(currentSlide + 1);
+    }
+
+    function handlePrevSlide() {
+      showSlide(currentSlide - 1);
+    }
+
+    // 开启自动循环轮播
+    function startAutoPlay() {
+      stopAutoPlay();
+      slideInterval = setInterval(handleNextSlide, intervalTime);
+    }
+
+    // 停止轮播
+    function stopAutoPlay() {
+      if (slideInterval) clearInterval(slideInterval);
+    }
+
+    // 1. 左右物理按钮点击事件
+    if (nextBtn && prevBtn) {
+      nextBtn.addEventListener('click', () => {
+        handleNextSlide();
+        startAutoPlay(); // 用户操作后重置定时器
+      });
+      prevBtn.addEventListener('click', () => {
+        handlePrevSlide();
+        startAutoPlay(); // 用户操作后重置定时器
+      });
+    }
+
+    // 2. 指示器圆点点击切换事件
+    dots.forEach((dot, idx) => {
+      dot.addEventListener('click', () => {
+        showSlide(idx);
+        startAutoPlay(); // 切换后重置定时器
+      });
+    });
+
+    // 3. 鼠标悬停暂停功能 (Pause on Hover)
+    if (heroSection) {
+      heroSection.addEventListener('mouseenter', stopAutoPlay);
+      heroSection.addEventListener('mouseleave', startAutoPlay);
+    }
+
+    // 首次载入启动自动播放
+    startAutoPlay();
+
+    /* =============================================================
+       进阶功能 2: 跨组件通讯逻辑 (Calculator To Form)
+       ============================================================= */
+    function lockInPrice() {
+      const sizeValue = document.getElementById('size-input').value;
+      const depthValue = document.getElementById('depth-input').value;
+      const calculatedPrice = document.getElementById('calc-price').textContent;
+      const priorityRadio = document.querySelector('input[name="priority"]:checked').value;
+      const priorityLabel = priorityRadio === 'emergency' ? '🚨 紧急除雪 (2小时内抵达)' : '⏰ 标准服务 (12小时内安排)';
+
+      const formattedMessage = `您好，我想锁定价格计算器中的预估报价！
+
+【预估服务明细如下】：
+--------------------------------------
+- 预估报价: ${calculatedPrice}
+- 清理面积: ${sizeValue} Sq Ft
+- 预估积雪深度: ${depthValue} Inches
+- 服务响应等级: ${priorityLabel}
+--------------------------------------
+请尽快与我取得联系以确认排班，非常感谢！`;
+
+      const messageTextarea = document.getElementById('form-message');
+      messageTextarea.value = formattedMessage;
+
+      const contactSection = document.getElementById('contact');
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+
+      // 视觉微高亮闪烁，提供更好的状态反馈
+      setTimeout(() => {
+        messageTextarea.focus();
+        messageTextarea.classList.add('ring-4', 'ring-purple-400', 'border-brand-purple');
+        setTimeout(() => {
+          messageTextarea.classList.remove('ring-4', 'ring-purple-400', 'border-brand-purple');
+        }, 2000);
+      }, 800); 
+    }
+
+    /* =============================================================
+       进阶功能 3: IntersectionObserver 智能大图延迟加载逻辑
+       ============================================================= */
+    document.addEventListener("DOMContentLoaded", () => {
+      const lazyImages = document.querySelectorAll('.lazy-image');
+
+      if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const image = entry.target;
+              image.src = image.dataset.src;
+              
+              image.onload = () => {
+                image.classList.remove('opacity-0');
+                image.classList.add('opacity-100');
+              };
+              imageObserver.unobserve(image);
+            }
+          });
+        }, {
+          rootMargin: "0px 0px 200px 0px"
+        });
+
+        lazyImages.forEach(image => {
+          imageObserver.observe(image);
+        });
+      } else {
+        lazyImages.forEach(image => {
+          image.src = image.dataset.src;
+          image.classList.remove('opacity-0');
+          image.classList.add('opacity-100');
+        });
+      }
+    });
+
+    /* =============================================================
+       基础交互 4: Before/After 拖拽滑块控制
+       ============================================================= */
+    const sliderRange = document.getElementById('slider-range');
+    const afterWrapper = document.getElementById('after-wrapper');
+    const sliderBar = document.getElementById('slider-bar');
+
+    sliderRange.addEventListener('input', (e) => {
+      const percentage = e.target.value;
+      afterWrapper.style.clipPath = `inset(0 ${100 - percentage}% 0 0)`;
+      sliderBar.style.left = `${percentage}%`;
+    });
+
+    /* =============================================================
+       基础交互 5: 实时价格计算器数值换算
+       ============================================================= */
+    const sizeInput = document.getElementById('size-input');
+    const sizeVal = document.getElementById('size-val');
+    const depthInput = document.getElementById('depth-input');
+    const depthVal = document.getElementById('depth-val');
+    const priceDisplay = document.getElementById('calc-price');
+
+    function calculateEstimate() {
+      const size = parseFloat(sizeInput.value);
+      const depth = parseFloat(depthInput.value);
+      const isEmergency = document.querySelector('input[name="priority"]:checked').value === 'emergency';
+      
+      const baseCost = 50;
+      const areaCost = size * 0.12;
+      const depthFactor = depth <= 3 ? 0 : Math.ceil((depth - 3) / 3) * 15;
+      
+      let total = baseCost + areaCost + depthFactor;
+      if (isEmergency) total *= 1.45;
+
+      sizeVal.textContent = `${size} Sq Ft`;
+      depthVal.textContent = `${depth} Inch${depth > 1 ? 'es' : ''}`;
+      priceDisplay.textContent = `$${total.toFixed(2)}`;
+    }
+
+    sizeInput.addEventListener('input', calculateEstimate);
+    depthInput.addEventListener('input', calculateEstimate);
+    document.querySelectorAll('input[name="priority"]').forEach(radio => {
+      radio.addEventListener('change', calculateEstimate);
+    });
+
+    calculateEstimate();
+  </script>
+</body>
+</html>

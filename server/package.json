@@ -1,0 +1,28 @@
+{
+  "name": "siteforge-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build --workspace @siteforge/shared && tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "npm run build --workspace @siteforge/shared && tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@siteforge/shared": "file:../shared",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.9.0",
+    "@types/supertest": "^6.0.2",
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.4"
+  }
+}

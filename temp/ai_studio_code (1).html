@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elena Rostova — Premium Interactive Space</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #04130f;
+      color: #ffffff;
+    }
+    /* 隐藏默认鼠标 (仅在桌面端生效) */
+    @media (min-width: 768px) {
+      body, a, button, input, textarea, select {
+        cursor: none !important;
+      }
+    }
+    .font-display {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* 1. 双重智能追踪光标 */
+    .custom-cursor-dot {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      background-color: #00E699;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
+    .custom-cursor-ring {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(0, 230, 153, 0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s, height 0.3s, background-color 0.3s, border-color 0.3s;
+    }
+    /* 鼠标悬停时的融合状态 */
+    .custom-cursor-ring.hovered {
+      width: 60px;
+      height: 60px;
+      background-color: rgba(0, 230, 153, 0.08);
+      border-color: rgba(0, 230, 153, 0.8);
+    }
+
+    /* 2. 基础玻璃卡片 */
+    .glass-card {
+      background: rgba(9, 34, 27, 0.4);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* 3. 3D 倾斜容器与真·边缘发光组合 */
+    .tilt-card {
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;
+      position: relative;
+    }
+    /* 发光边框层 */
+    .tilt-card::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px; /* 露出发光描边 */
+      background: radial-gradient(
+        250px circle at var(--mouse-x, 0px) var(--mouse-y, 0px),
+        rgba(0, 230, 153, 0.4) 0%,
+        transparent 70%
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .tilt-card:hover::after {
+      opacity: 1;
+    }
+
+    /* 4. 滚动淡入动效 */
+    .fade-up-element {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fade-up-element.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 5. 荧光绿漫反射光源 */
+    .glow-bg {
+      filter: blur(140px);
+      background: radial-gradient(circle, rgba(0, 230, 153, 0.14) 0%, rgba(4, 19, 15, 0) 70%);
+    }
+
+    /* 6. 流体变彩背景 */
+    .iridescent-bg {
+      background: linear-gradient(135deg, #09221b 0%, #00e699 50%, #04130f 100%);
+      background-size: 200% 200%;
+      animation: fluidGlow 12s ease infinite;
+    }
+    @keyframes fluidGlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
+</head>
+<body class="overflow-x-hidden selection:bg-[#00E699] selection:text-black">
+
+  <!-- 双重平滑定制鼠标 (仅在 md 屏幕及以上渲染) -->
+  <div class="custom-cursor-dot hidden md:block"></div>
+  <div class="custom-cursor-ring hidden md:block"></div>
+
+  <!-- 全局漫反射光斑 -->
+  <div class="absolute top-0 left-[-15%] w-[60%] h-[700px] glow-bg pointer-events-none -z-10"></div>
+  <div class="absolute top-[1800px] right-[-15%] w-[50%] h-[800px] glow-bg pointer-events-none -z-10"></div>
+  <div class="absolute bottom-[800px] left-[-10%] w-[50%] h-[800px] glow-bg pointer-events-none -z-10"></div>
+
+  <!-- 1. 顶部导航栏 -->
+  <header class="w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between z-50 relative">
+    <div class="flex items-center space-x-2">
+      <span class="font-display font-extrabold text-xl tracking-tight text-[#00E699]">elenarostova<span class="text-white">.</span></span>
+    </div>
+    <nav class="hidden md:flex items-center space-x-10 text-xs font-semibold tracking-widest text-[#899E97]">
+      <!-- 带有 scramble 解码属性的导航 -->
+      <a href="#hero" class="nav-target text-white hover:text-[#00E699] transition scramble-trigger" data-text="HOME">HOME</a>
+      <a href="#works" class="nav-target hover:text-[#00E699] transition scramble-trigger" data-text="SELECTED WORKS">SELECTED WORKS</a>
+      <a href="#process" class="nav-target hover:text-[#00E699] transition scramble-trigger" data-text="THE PROCESS">THE PROCESS</a>
+      <a href="#approach" class="nav-target hover:text-[#00E699] transition scramble-trigger" data-text="PHILOSOPHY">PHILOSOPHY</a>
+    </nav>
+    <div>
+      <a href="#contact" class="px-5 py-2.5 rounded-full text-xs font-semibold tracking-wider bg-white text-black hover:bg-opacity-90 transition inline-block hover-trigger">
+        LET'S TALK
+      </a>
+    </div>
+  </header>
+
+  <!-- 2. 英雄版块 (Hero) -->
+  <section id="hero" class="max-w-7xl mx-auto px-6 pt-12 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative min-h-[85vh]">
+    <div class="lg:col-span-7 space-y-8 z-10 fade-up-element">
+      <h1 class="font-display text-5xl md:text-7xl font-extrabold leading-[1.1] tracking-tight">
+        Your next level <br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#00E699] to-[#899E97]">starts with digital craft.</span>
+      </h1>
+      <div class="max-w-md space-y-6">
+        <p class="text-[#899E97] text-sm md:text-base leading-relaxed">
+          Elena is a creative technologist pushing visual standards. Specializing in highly interactive frontend spaces, bespoke brand codes, and fluid user mechanics.
+        </p>
+        <div class="flex items-center space-x-4">
+          <a href="#works" class="px-6 py-3.5 rounded-full text-xs font-bold tracking-widest bg-[#00E699] text-black hover:shadow-lg hover:shadow-[#00e699]/30 transition-all duration-300 hover-trigger">
+            EXPLORE WORK
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧人像容器 (应用3D倾斜与发光) -->
+    <div class="lg:col-span-5 relative w-full h-[450px] md:h-[550px] rounded-3xl overflow-hidden glass-card tilt-card fade-up-element hover-trigger" style="transition-delay: 150ms;">
+      <div class="absolute inset-0 bg-cover bg-center brightness-75 contrast-110 mix-blend-luminosity hover:scale-105 transition-transform duration-700" 
+           style="background-image: url('https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=80');">
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#04130f] via-transparent to-transparent opacity-90"></div>
+      <div class="absolute inset-0 bg-[#00e699]/10 mix-blend-color"></div>
+      
+      <div class="absolute bottom-6 left-6 right-6 p-5 rounded-2xl glass-card space-y-1 z-10 pointer-events-none">
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-[#00E699] font-bold tracking-widest uppercase">[ IN ACTION ]</span>
+          <span class="w-2 h-2 rounded-full bg-[#00E699] animate-pulse"></span>
+        </div>
+        <p class="text-sm font-light text-[#899E97]">Merging high design with high performance engineering.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 专业标签跑马灯 -->
+  <section class="border-y border-white/5 bg-[#09221b]/20 py-8 mb-16 fade-up-element">
+    <div class="max-w-7xl mx-auto px-6 flex flex-wrap gap-y-4 justify-between items-center text-xs font-semibold tracking-widest text-[#00E699] uppercase">
+      <div class="flex items-center space-x-2"><span class="opacity-40">◇</span> <span>UI/UX Design</span></div>
+      <div class="flex items-center space-x-2"><span class="opacity-40">◇</span> <span>Creative Code</span></div>
+      <div class="flex items-center space-x-2"><span class="opacity-40">◇</span> <span>Identity Systems</span></div>
+      <div class="flex items-center space-x-2"><span class="opacity-40">◇</span> <span>Aesthetic Tech</span></div>
+      <div class="flex items-center space-x-2"><span class="opacity-40">◇</span> <span>Micro-Interactions</span></div>
+    </div>
+  </section>
+
+  <!-- 4. 精选案例展示网格 (Selected Works - 应用3D与倾斜) -->
+  <section id="works" class="max-w-7xl mx-auto px-6 py-20 space-y-12">
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 fade-up-element">
+      <div class="space-y-4">
+        <span class="text-xs font-bold tracking-widest text-[#00E699] uppercase">[ SELECTED PORTFOLIO ]</span>
+        <h2 class="font-display text-3xl md:text-5xl font-extrabold leading-tight">
+          Recent visual codes<br>
+          <span class="text-[#899E97] font-light">crafted with technical depth</span>
+        </h2>
+      </div>
+    </div>
+
+    <!-- 交互式案例网格 -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      
+      <!-- 案例 1: 宽画幅 -->
+      <div class="lg:col-span-8 tilt-card rounded-3xl p-8 flex flex-col justify-between space-y-12 group fade-up-element hover-trigger">
+        <div class="flex justify-between items-start z-10">
+          <div class="space-y-1">
+            <h3 class="text-2xl font-bold font-display group-hover:text-[#00E699] transition duration-300">Vortex Quantum Dashboard</h3>
+            <p class="text-xs text-[#899E97]">Web3D Telemetry Platform • Creative Engineering</p>
+          </div>
+          <span class="text-xs font-mono px-3 py-1.5 rounded-full border border-white/10 bg-[#04130f]">2026</span>
+        </div>
+        
+        <div class="h-80 rounded-2xl overflow-hidden relative border border-white/5 z-10">
+          <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
+               style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80');"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#04130f] via-transparent to-transparent opacity-80"></div>
+          <div class="absolute inset-0 bg-[#00e699]/10 opacity-0 group-hover:opacity-100 transition duration-500 mix-blend-overlay"></div>
+        </div>
+      </div>
+
+      <!-- 案例 2: 窄画幅 -->
+      <div class="lg:col-span-4 tilt-card rounded-3xl p-8 flex flex-col justify-between space-y-12 group fade-up-element hover-trigger" style="transition-delay: 100ms;">
+        <div class="flex justify-between items-start z-10">
+          <div class="space-y-1">
+            <h3 class="text-2xl font-bold font-display group-hover:text-[#00E699] transition duration-300">Aether Brand</h3>
+            <p class="text-xs text-[#899E97]">Luxury Identity System</p>
+          </div>
+          <span class="text-xs font-mono px-3 py-1.5 rounded-full border border-white/10 bg-[#04130f]">2025</span>
+        </div>
+        
+        <div class="h-80 rounded-2xl overflow-hidden relative border border-white/5 z-10">
+          <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" 
+               style="background-image: url('https://images.unsplash.com/photo-1618005198143-e5283b519a7f?auto=format&fit=crop&w=800&q=80');"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#04130f] via-transparent to-transparent opacity-80"></div>
+          <div class="absolute inset-0 bg-[#00e699]/10 opacity-0 group-hover:opacity-100 transition duration-500 mix-blend-overlay"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 5. 工作流程 (The Process) -->
+  <section id="process" class="max-w-7xl mx-auto px-6 py-20 space-y-16">
+    <div class="text-center space-y-4 fade-up-element">
+      <span class="text-xs font-bold tracking-widest text-[#00E699] uppercase">[ THE PROCESS ]</span>
+      <h2 class="font-display text-3xl md:text-5xl font-extrabold leading-tight">
+        Digital experiences built <br>
+        <span class="text-[#899E97] font-light">around your strategic goals</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      
+      <div class="tilt-card rounded-3xl p-8 md:p-10 space-y-8 fade-up-element hover-trigger">
+        <div class="space-y-3 z-10 relative">
+          <span class="text-xs font-bold text-[#00E699] tracking-widest uppercase">Phase 01 / Technical Audit</span>
+          <h3 class="text-2xl font-bold font-display">Discovering friction, defining identity</h3>
+          <p class="text-sm text-[#899E97] leading-relaxed">
+            I deep-dive into your existing code performance metrics, analytics, and messaging. We pinpoint load drops, responsiveness gaps, and aesthetic disconnects.
+          </p>
+        </div>
+        <div class="h-60 rounded-2xl overflow-hidden relative border border-white/5 z-10">
+          <div class="absolute inset-0 bg-cover bg-center brightness-50 contrast-125 saturate-50" style="background-image: url('https://images.unsplash.com/photo-1502224562085-639556652f33?auto=format&fit=crop&w=800&q=80');"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#04130f] to-transparent"></div>
+        </div>
+      </div>
+
+      <div class="tilt-card rounded-3xl p-8 md:p-10 space-y-8 fade-up-element hover-trigger" style="transition-delay: 100ms;">
+        <div class="space-y-3 z-10 relative">
+          <span class="text-xs font-bold text-[#00E699] tracking-widest uppercase">Phase 02 / Component Formulation</span>
+          <h3 class="text-2xl font-bold font-display">A bespoke library, built to scale</h3>
+          <p class="text-sm text-[#899E97] leading-relaxed">
+            We deliver highly optimized UI setups containing polished micro-animations and production-ready code blocks so you can scale your presence with absolute ease.
+          </p>
+        </div>
+        <div class="h-60 rounded-2xl overflow-hidden relative flex items-center justify-center border border-white/5 z-10">
+          <div class="absolute inset-0 bg-cover bg-center brightness-40" style="background-image: url('https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=800&q=80');"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#04130f] to-transparent"></div>
+          <span class="z-10 text-xs font-bold tracking-widest text-[#00E699] border border-[#00E699]/20 px-4 py-2 rounded-full bg-[#04130f]/85 backdrop-blur-md">
+            [ SYSTEM INTEGRITY ]
+          </span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 6. 设计哲学 (The Approach - 包含流体、倾斜与发光) -->
+  <section id="approach" class="max-w-7xl mx-auto px-6 py-20 space-y-16">
+    <div class="text-center space-y-4 fade-up-element">
+      <span class="text-xs font-bold tracking-widest text-[#00E699] uppercase">[ PHILOSOPHY ]</span>
+      <h2 class="font-display text-3xl md:text-5xl font-extrabold leading-tight">
+        Better systems start with<br>
+        <span class="text-[#899E97] font-light">integrated information</span>
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- 卡 1 -->
+      <div class="tilt-card rounded-3xl p-6 flex flex-col justify-between space-y-8 fade-up-element hover-trigger">
+        <div class="h-64 rounded-2xl overflow-hidden relative iridescent-bg flex items-center justify-center z-10 border border-white/5">
+          <div class="absolute inset-0 bg-cover bg-center mix-blend-overlay opacity-30" style="background-image: url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=600&q=80');"></div>
+          <span class="z-10 font-display font-black text-2xl tracking-widest text-white/20 select-none">DISCOVER</span>
+        </div>
+        <div class="space-y-2 z-10">
+          <h3 class="text-xl font-bold font-display text-white">Deconstruct</h3>
+          <p class="text-sm text-[#899E97] leading-relaxed">
+            Uncover the digital friction, user path anomalies, and aesthetic blocks through custom-tailored telemetry.
+          </p>
+        </div>
+      </div>
+
+      <!-- 卡 2 -->
+      <div class="tilt-card rounded-3xl p-6 flex flex-col justify-between space-y-8 fade-up-element hover-trigger" style="transition-delay: 100ms;">
+        <div class="h-64 rounded-2xl overflow-hidden relative flex items-center justify-center bg-black/40 z-10 border border-white/5">
+          <div class="absolute inset-0 bg-cover bg-center brightness-75 contrast-125 saturate-50 mix-blend-luminosity" style="background-image: url('https://images.unsplash.com/photo-1620987278429-ab178d6eb547?auto=format&fit=crop&w=600&q=80');"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#04130f]/60 to-transparent"></div>
+          <span class="z-10 text-xs font-bold tracking-widest text-[#00E699] border border-[#00E699]/30 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-sm">
+            Rx_Only / Portfolio V3
+          </span>
+        </div>
+        <div class="space-y-2 z-10">
+          <h3 class="text-xl font-bold font-display text-white">Action</h3>
+          <p class="text-sm text-[#899E97] leading-relaxed">
+            Formulate bespoke, production-ready interface systems engineered entirely around performance and elegance.
+          </p>
+        </div>
+      </div>
+
+      <!-- 卡 3 -->
+      <div class="tilt-card rounded-3xl p-6 flex flex-col justify-between space-y-8 fade-up-element hover-trigger" style="transition-delay: 200ms;">
+        <div class="h-64 rounded-2xl overflow-hidden relative z-10 border border-white/5">
+          <div class="absolute inset-0 bg-cover bg-center brightness-50 contrast-125 saturate-0" style="background-image: url('https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=600&q=80');"></div>
+          <div class="absolute inset-0 bg-gradient-to-tr from-[#00E699]/20 via-transparent to-orange-500/10 mix-blend-color-dodge"></div>
+          <div class="absolute inset-0 bg-gradient-to-t from-[#04130f] to-transparent"></div>
+        </div>
+        <div class="space-y-2 z-10">
+          <h3 class="text-xl font-bold font-display text-white">Improve</h3>
+          <p class="text-sm text-[#899E97] leading-relaxed">
+            Track user micro-feedback and speed metrics continuously to iteratively optimize and retain market leadership.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 7. 联络板块 -->
+  <section id="contact" class="max-w-7xl mx-auto px-6 pb-28">
+    <div class="tilt-card rounded-3xl p-8 md:p-16 relative overflow-hidden fade-up-element hover-trigger">
+      <div class="absolute inset-x-0 bottom-0 h-40 glow-bg opacity-20 pointer-events-none"></div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+        
+        <div class="lg:col-span-6 space-y-6 text-left">
+          <span class="text-xs font-bold tracking-widest text-[#00E699] uppercase">[ BOOK AN ESTIMATE ]</span>
+          <h2 class="font-display text-3xl md:text-5xl font-extrabold leading-tight">
+            Invest in the most<br>
+            <span class="text-[#00E699]">important asset you have!</span>
+          </h2>
+          <p class="text-[#899E97] text-sm leading-relaxed max-w-md">
+            Let's formulate an aesthetic foundation that commands user respect and scales seamlessly. Fill in the parameters to book a direct consult call.
+          </p>
+        </div>
+
+        <div class="lg:col-span-6">
+          <form class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <input type="text" placeholder="Name" class="w-full bg-[#04130f]/60 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white placeholder-[#899E97] focus:outline-none focus:border-[#00E699] transition hover-trigger">
+              <input type="email" placeholder="Email" class="w-full bg-[#04130f]/60 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white placeholder-[#899E97] focus:outline-none focus:border-[#00E699] transition hover-trigger">
+            </div>
+            <textarea placeholder="Tell me about your system or creative goal" rows="4" class="w-full bg-[#04130f]/60 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white placeholder-[#899E97] focus:outline-none focus:border-[#00E699] transition hover-trigger"></textarea>
+            <button type="submit" class="w-full py-4 rounded-2xl text-xs font-bold tracking-widest bg-[#00E699] text-black hover:shadow-lg hover:shadow-[#00e699]/20 transition-all duration-300 hover-trigger">
+              SUBMIT SYSTEM REQUEST
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer class="border-t border-white/5 py-8 text-center text-xs text-[#899E97]">
+    <p>© 2026 Elena Rostova. Formulated on Telehealth Aesthetics.</p>
+  </footer>
+
+
+  <!-- JS：高级运动物理学与交互脚本 -->
+  <script>
+    // ----------------------------------------------------
+    // 1. 双重追踪鼠标系统 (带物理滞后 Lerp 算法)
+    // ----------------------------------------------------
+    const cursorDot = document.querySelector('.custom-cursor-dot');
+    const cursorRing = document.querySelector('.custom-cursor-ring');
+    
+    let mouseX = 0, mouseY = 0; // 真实坐标
+    let ringX = 0, ringY = 0;   // 缓动坐标
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      
+      // 实点瞬间响应
+      if(cursorDot) {
+        cursorDot.style.left = `${mouseX}px`;
+        cursorDot.style.top = `${mouseY}px`;
+      }
+    });
+
+    // Lerp (线性插值) 算法实现弹簧般的外圈缓动效果
+    function animateCursor() {
+      const lerpFactor = 0.12; // 值越小越平滑、有延迟惯性
+      ringX += (mouseX - ringX) * lerpFactor;
+      ringY += (mouseY - ringY) * lerpFactor;
+
+      if(cursorRing) {
+        cursorRing.style.left = `${ringX}px`;
+        cursorRing.style.top = `${ringY}px`;
+      }
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // 智能交互：当光标移过可触发元素时，外环发生缩放与变色
+    const hoverElements = document.querySelectorAll('.hover-trigger, a, button, input, textarea');
+    hoverElements.forEach(el => {
+      el.addEventListener('mouseenter', () => cursorRing?.classList.add('hovered'));
+      el.addEventListener('mouseleave', () => cursorRing?.classList.remove('hovered'));
+    });
+
+
+    // ----------------------------------------------------
+    // 2. 3D 物理空间卡片倾斜与真·边框发光计算
+    // ----------------------------------------------------
+    const tiltCards = document.querySelectorAll('.tilt-card');
+    
+    tiltCards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left; // 鼠标相对卡片左侧
+        const y = e.clientY - rect.top;  // 鼠标相对卡片顶部
+        
+        // 计算发光点坐标 (注入CSS变量中，供 radial-gradient 使用) [1]
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+
+        // 3D 旋转物理角度计算 (以卡片中心点为 0,0 原点)
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        
+        // 旋转系数：分母越大倾斜越温和 (这里设为15)
+        const rotateX = (centerY - y) / 15; 
+        const rotateY = (x - centerX) / 15;
+
+        // 应用 3D 矩阵形变，使卡片轻微凸显并向光标方向靠拢
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+      });
+
+      // 鼠标离开恢复原状 (附带平滑过渡时间)
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+      });
+    });
+
+
+    // ----------------------------------------------------
+    // 3. 黑客帝国式 Matrix 文本解码 scrambler
+    // ----------------------------------------------------
+    const scrambleElements = document.querySelectorAll('.scramble-trigger');
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    scrambleElements.forEach(el => {
+      const originalText = el.getAttribute('data-text');
+
+      el.addEventListener('mouseenter', () => {
+        let iteration = 0;
+        let interval = null;
+
+        clearInterval(interval);
+        
+        interval = setInterval(() => {
+          el.innerText = originalText
+            .split("")
+            .map((letter, index) => {
+              if (index < iteration) {
+                return originalText[index];
+              }
+              return letters[Math.floor(Math.random() * 26)];
+            })
+            .join("");
+
+          if (iteration >= originalText.length) {
+            clearInterval(interval);
+          }
+          // 解码步长速度
+          iteration += 1 / 3;
+        }, 30);
+      });
+    });
+
+
+    // ----------------------------------------------------
+    // 4. 滚动视口渐次滑入 (Observer)
+    // ----------------------------------------------------
+    const fadeElements = document.querySelectorAll('.fade-up-element');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+    fadeElements.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
