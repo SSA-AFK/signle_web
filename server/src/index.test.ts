@@ -24,6 +24,32 @@ describe('SiteForge API', () => {
     expect(response.text).toContain(defaultSiteData.user.displayName);
   });
 
+  it('uploads image binaries and returns a public URL', async () => {
+    const response = await request(app)
+      .post('/api/upload')
+      .set('Content-Type', 'image/png')
+      .set('X-Filename', 'sample.png')
+      .send(Buffer.from([0x89, 0x50, 0x4e, 0x47]))
+      .expect(201);
+
+    expect(response.body.url).toContain('/uploads/');
+    expect(response.body.fileName).toMatch(/sample\.png$/);
+    expect(response.body.contentType).toBe('image/png');
+  });
+
+  it('uploads video binaries and returns a public URL', async () => {
+    const response = await request(app)
+      .post('/api/upload')
+      .set('Content-Type', 'video/mp4')
+      .set('X-Filename', 'demo.mp4')
+      .send(Buffer.from([0x00, 0x00, 0x00, 0x18]))
+      .expect(201);
+
+    expect(response.body.url).toContain('/uploads/');
+    expect(response.body.fileName).toMatch(/demo\.mp4$/);
+    expect(response.body.contentType).toBe('video/mp4');
+  });
+
   it('returns mock AI response', async () => {
     const response = await request(app)
       .post('/api/ai/chat')

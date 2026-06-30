@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { defaultSiteData, type BlogPost, type Experience, type Project, type SiteConfig, type SiteData, type Skill, type SocialLink, type User, type VideoItem } from '@siteforge/shared';
+import { defaultSiteData, type Award, type BlogPost, type Experience, type Project, type SiteConfig, type SiteData, type Skill, type SocialLink, type User, type VideoItem } from '@siteforge/shared';
 
 const STORAGE_KEY = 'siteforge:data:v1';
 
@@ -15,6 +15,8 @@ interface SiteStore {
   removeExperience: (id: number) => void;
   upsertSkill: (skill: Skill) => void;
   removeSkill: (id: number) => void;
+  upsertAward: (award: Award) => void;
+  removeAward: (id: number) => void;
   upsertSocialLink: (social: SocialLink) => void;
   removeSocialLink: (id: number) => void;
   upsertVideo: (video: VideoItem) => void;
@@ -32,6 +34,7 @@ function normalizeSiteData(data: Partial<SiteData>): SiteData {
     projects: data.projects ?? defaultSiteData.projects,
     experiences: data.experiences ?? defaultSiteData.experiences,
     skills: data.skills ?? defaultSiteData.skills,
+    awards: data.awards ?? defaultSiteData.awards,
     socialLinks: data.socialLinks ?? defaultSiteData.socialLinks,
     blogPosts: data.blogPosts ?? defaultSiteData.blogPosts,
     videos: data.videos ?? defaultSiteData.videos
@@ -110,6 +113,19 @@ export const useSiteStore = create<SiteStore>((set, get) => ({
   removeSkill: (id) => {
     const current = get().data;
     const data = { ...current, skills: current.skills.filter((skill) => skill.id !== id) };
+    persist(data);
+    set({ data });
+  },
+  upsertAward: (award) => {
+    const current = get().data;
+    const awards = byOrder(current.awards.some((item) => item.id === award.id) ? current.awards.map((item) => (item.id === award.id ? award : item)) : [...current.awards, award]);
+    const data = { ...current, awards };
+    persist(data);
+    set({ data });
+  },
+  removeAward: (id) => {
+    const current = get().data;
+    const data = { ...current, awards: current.awards.filter((award) => award.id !== id) };
     persist(data);
     set({ data });
   },

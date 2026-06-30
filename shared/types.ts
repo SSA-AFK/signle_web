@@ -75,6 +75,16 @@ export interface Skill {
   displayOrder: number;
 }
 
+export interface Award {
+  id?: number;
+  userId?: number;
+  title: string;
+  issuer: string;
+  date?: string;
+  description?: string;
+  displayOrder: number;
+}
+
 export interface SocialLink {
   id?: number;
   userId?: number;
@@ -117,10 +127,12 @@ export interface SiteConfig {
   theme: Theme;
   primaryColor: string;
   layout: Layout;
+  heroImages: string[];
   showBlog: boolean;
   showExperience: boolean;
   showSkills: boolean;
   showVideos: boolean;
+  showAwards: boolean;
   customCss?: string;
   seoTitle?: string;
   seoDescription?: string;
@@ -133,6 +145,7 @@ export interface SiteData {
   projects: Project[];
   experiences: Experience[];
   skills: Skill[];
+  awards: Award[];
   socialLinks: SocialLink[];
   blogPosts: BlogPost[];
   videos: VideoItem[];
@@ -150,6 +163,9 @@ export type AIAction =
   | { action: 'addSkill'; skill: Partial<Skill> }
   | { action: 'updateSkill'; id: number; fields: Partial<Skill> }
   | { action: 'deleteSkill'; id: number }
+  | { action: 'addAward'; award: Partial<Award> }
+  | { action: 'updateAward'; id: number; fields: Partial<Award> }
+  | { action: 'deleteAward'; id: number }
   | { action: 'addSocialLink'; social: Partial<SocialLink> }
   | { action: 'updateSocialLink'; id: number; fields: Partial<SocialLink> }
   | { action: 'deleteSocialLink'; id: number }
@@ -183,10 +199,16 @@ export const defaultConfig: SiteConfig = {
   theme: 'light',
   primaryColor: '#3b0764',
   layout: 'grid',
+  heroImages: [
+    'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1920&q=80',
+    'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1920&q=80',
+    'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?auto=format&fit=crop&w=1920&q=80'
+  ],
   showBlog: false,
   showExperience: true,
   showSkills: true,
   showVideos: true,
+  showAwards: true,
   seoTitle: '',
   seoDescription: ''
 };
@@ -264,6 +286,24 @@ export const defaultSiteData: SiteData = {
     { id: 1, name: 'Figma', category: 'Design', proficiency: 5, displayOrder: 0 },
     { id: 2, name: 'React', category: 'Frontend', proficiency: 5, displayOrder: 1 },
     { id: 3, name: 'Motion Design', category: 'Interaction', proficiency: 4, displayOrder: 2 }
+  ],
+  awards: [
+    {
+      id: 1,
+      title: 'Awwwards Honorable Mention',
+      issuer: 'Awwwards',
+      date: '2025',
+      description: 'Recognized for visual craft, interaction detail, and responsive portfolio storytelling.',
+      displayOrder: 0
+    },
+    {
+      id: 2,
+      title: 'Design System Challenge Finalist',
+      issuer: 'Independent Studio Review',
+      date: '2024',
+      description: 'Selected for a polished component system and clear product thinking.',
+      displayOrder: 1
+    }
   ],
   socialLinks: [
     { id: 1, platform: 'GitHub', url: 'https://github.com', icon: 'github', displayOrder: 0 },

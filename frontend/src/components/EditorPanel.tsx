@@ -1,8 +1,10 @@
 import { Download, Plus, RotateCcw, Save, Trash2 } from 'lucide-react';
 import type { ReactNode } from 'react';
-import type { Experience, Project, ProjectImage, Skill, SocialLink, VideoItem } from '@siteforge/shared';
+import type { Award, Experience, Project, ProjectImage, Skill, SocialLink, VideoItem } from '@siteforge/shared';
 import { useSiteStore } from '../store/siteStore';
 import { exportSiteHtml } from '../utils/exportHtml';
+import { ImageUploadField } from './ImageUploadField';
+import { VideoUploadField } from './VideoUploadField';
 
 function nextId(items: Array<{ id?: number }>) {
   return Math.max(0, ...items.map((item) => item.id || 0)) + 1;
@@ -28,7 +30,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 const inputClass = 'w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 outline-none transition focus:border-purple-700 focus:ring-4 focus:ring-purple-100';
 
 export function EditorPanel() {
-  const { data, templateId, updateUser, updateConfig, upsertProject, removeProject, upsertExperience, removeExperience, upsertSkill, removeSkill, upsertSocialLink, removeSocialLink, upsertVideo, removeVideo, reset } = useSiteStore();
+  const { data, templateId, updateUser, updateConfig, upsertProject, removeProject, upsertExperience, removeExperience, upsertSkill, removeSkill, upsertAward, removeAward, upsertSocialLink, removeSocialLink, upsertVideo, removeVideo, reset } = useSiteStore();
 
   async function saveToServer() {
     const response = await fetch('/api/site/local', {
@@ -46,14 +48,14 @@ export function EditorPanel() {
     const id = nextId(data.projects);
     const project: Project = {
       id,
-      title: `新项目 ${id}`,
+      title: '',
       slug: `project-${id}`,
-      category: 'Portfolio',
-      coverImage: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80',
-      description: '描述这个项目的目标、过程和成果。',
+      category: '',
+      coverImage: '',
+      description: '',
       content: '',
-      role: 'Designer / Developer',
-      tools: 'Figma, React',
+      role: '',
+      tools: '',
       displayOrder: data.projects.length,
       isFeatured: false,
       viewCount: 0,
@@ -67,8 +69,8 @@ export function EditorPanel() {
     const id = nextId(images);
     const image: ProjectImage = {
       id,
-      imageUrl: 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=900&q=80',
-      caption: `Gallery image ${id}`,
+      imageUrl: '',
+      caption: '',
       displayOrder: images.length,
       isCover: false
     };
@@ -89,16 +91,33 @@ export function EditorPanel() {
     });
   }
 
+  function addHeroImage() {
+    updateConfig({ heroImages: [...(data.config.heroImages ?? []), ''] });
+  }
+
+  function updateHeroImage(index: number, imageUrl: string) {
+    updateConfig({
+      heroImages: (data.config.heroImages ?? []).map((item, itemIndex) => (itemIndex === index ? imageUrl : item))
+    });
+  }
+
+  function removeHeroImage(index: number) {
+    updateConfig({
+      heroImages: (data.config.heroImages ?? []).filter((_, itemIndex) => itemIndex !== index)
+    });
+  }
+
   function addExperience() {
     const id = nextId(data.experiences);
     const experience: Experience = {
       id,
       type: 'work',
-      company: '新机构',
-      position: '职位名称',
-      description: '描述你的职责、贡献和结果。',
-      startDate: '2024-01',
-      isCurrent: true,
+      company: '',
+      position: '',
+      description: '',
+      startDate: '',
+      endDate: '',
+      isCurrent: false,
       displayOrder: data.experiences.length
     };
     upsertExperience(experience);
@@ -108,21 +127,34 @@ export function EditorPanel() {
     const id = nextId(data.skills);
     const skill: Skill = {
       id,
-      name: 'New Skill',
-      category: 'General',
+      name: '',
+      category: '',
       proficiency: 4,
       displayOrder: data.skills.length
     };
     upsertSkill(skill);
   }
 
+  function addAward() {
+    const id = nextId(data.awards);
+    const award: Award = {
+      id,
+      title: '',
+      issuer: '',
+      date: '',
+      description: '',
+      displayOrder: data.awards.length
+    };
+    upsertAward(award);
+  }
+
   function addSocial() {
     const id = nextId(data.socialLinks);
     const social: SocialLink = {
       id,
-      platform: 'GitHub',
-      url: 'https://github.com',
-      icon: 'github',
+      platform: '',
+      url: '',
+      icon: '',
       displayOrder: data.socialLinks.length
     };
     upsertSocialLink(social);
@@ -132,11 +164,11 @@ export function EditorPanel() {
     const id = nextId(data.videos);
     const video: VideoItem = {
       id,
-      title: `视频 ${id}`,
-      platform: 'youtube',
-      videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-      thumbnailUrl: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=900&q=80',
-      description: '补充视频简介、幕后过程或项目演示。',
+      title: '',
+      platform: 'custom',
+      videoUrl: '',
+      thumbnailUrl: '',
+      description: '',
       displayOrder: data.videos.length,
       isFeatured: false
     };
@@ -168,14 +200,14 @@ export function EditorPanel() {
       <div className="sf-scrollbar min-h-0 flex-1 space-y-6 overflow-y-auto p-5">
         <section className="space-y-3">
           <h2 className="text-sm font-black text-slate-950">个人信息</h2>
-          <Field label="显示名称"><input className={inputClass} value={data.user.displayName} onChange={(event) => updateUser({ displayName: event.target.value })} /></Field>
-          <Field label="用户名"><input className={inputClass} value={data.user.username} onChange={(event) => updateUser({ username: event.target.value })} /></Field>
-          <Field label="邮箱"><input className={inputClass} type="email" value={data.user.email} onChange={(event) => updateUser({ email: event.target.value })} /></Field>
-          <Field label="头像 URL"><input className={inputClass} value={data.user.avatarUrl || ''} onChange={(event) => updateUser({ avatarUrl: event.target.value })} /></Field>
-          <Field label="头衔"><input className={inputClass} value={data.user.title || ''} onChange={(event) => updateUser({ title: event.target.value })} /></Field>
-          <Field label="一句话简介"><textarea className={inputClass} rows={3} value={data.user.bio || ''} onChange={(event) => updateUser({ bio: event.target.value })} /></Field>
-          <Field label="详细介绍"><textarea className={inputClass} rows={4} value={data.user.fullBio || ''} onChange={(event) => updateUser({ fullBio: event.target.value })} /></Field>
-          <Field label="位置"><input className={inputClass} value={data.user.location || ''} onChange={(event) => updateUser({ location: event.target.value })} /></Field>
+          <Field label="显示名称"><input className={inputClass} placeholder="例如：李明 / Alex Chen" value={data.user.displayName} onChange={(event) => updateUser({ displayName: event.target.value })} /></Field>
+          <Field label="用户名"><input className={inputClass} placeholder="例如：alexchen" value={data.user.username} onChange={(event) => updateUser({ username: event.target.value })} /></Field>
+          <Field label="邮箱"><input className={inputClass} type="email" placeholder="例如：hello@example.com" value={data.user.email} onChange={(event) => updateUser({ email: event.target.value })} /></Field>
+          <ImageUploadField label="头像" value={data.user.avatarUrl || ''} placeholder="例如：https://example.com/avatar.jpg，或选择本地头像" onChange={(avatarUrl) => updateUser({ avatarUrl })} />
+          <Field label="头衔"><input className={inputClass} placeholder="例如：产品设计师 / 前端开发者" value={data.user.title || ''} onChange={(event) => updateUser({ title: event.target.value })} /></Field>
+          <Field label="一句话简介"><textarea className={inputClass} rows={3} placeholder="例如：用设计和技术构建清晰、好用的数字体验" value={data.user.bio || ''} onChange={(event) => updateUser({ bio: event.target.value })} /></Field>
+          <Field label="详细介绍"><textarea className={inputClass} rows={4} placeholder="例如：介绍你的背景、专长、工作方式和代表成果" value={data.user.fullBio || ''} onChange={(event) => updateUser({ fullBio: event.target.value })} /></Field>
+          <Field label="位置"><input className={inputClass} placeholder="例如：中国 · 杭州" value={data.user.location || ''} onChange={(event) => updateUser({ location: event.target.value })} /></Field>
         </section>
 
         <section className="space-y-3">
@@ -185,21 +217,32 @@ export function EditorPanel() {
             <select className={inputClass} value={data.config.layout} onChange={(event) => updateConfig({ layout: event.target.value as typeof data.config.layout })}>
               <option value="grid">Grid</option>
               <option value="list">List</option>
-              <option value="masonry">Masonry</option>
+              <option value="masonry">Masonry（首版按 Grid 展示）</option>
             </select>
           </Field>
-          <label className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm font-bold text-slate-700">
-            显示经历 <input type="checkbox" checked={data.config.showExperience} onChange={(event) => updateConfig({ showExperience: event.target.checked })} />
-          </label>
-          <label className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm font-bold text-slate-700">
-            显示技能 <input type="checkbox" checked={data.config.showSkills} onChange={(event) => updateConfig({ showSkills: event.target.checked })} />
-          </label>
-          <label className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm font-bold text-slate-700">
-            显示视频 <input type="checkbox" checked={data.config.showVideos} onChange={(event) => updateConfig({ showVideos: event.target.checked })} />
-          </label>
-          <label className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm font-bold text-slate-700">
-            显示博客 <input type="checkbox" checked={data.config.showBlog} onChange={(event) => updateConfig({ showBlog: event.target.checked })} />
-          </label>
+          <label className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm font-bold text-slate-700">显示经历 <input type="checkbox" checked={data.config.showExperience} onChange={(event) => updateConfig({ showExperience: event.target.checked })} /></label>
+          <label className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm font-bold text-slate-700">显示技能 <input type="checkbox" checked={data.config.showSkills} onChange={(event) => updateConfig({ showSkills: event.target.checked })} /></label>
+          <label className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm font-bold text-slate-700">显示视频 <input type="checkbox" checked={data.config.showVideos} onChange={(event) => updateConfig({ showVideos: event.target.checked })} /></label>
+          <label className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm font-bold text-slate-700">显示荣誉奖项 <input type="checkbox" checked={data.config.showAwards} onChange={(event) => updateConfig({ showAwards: event.target.checked })} /></label>
+          <label className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm font-bold text-slate-700">显示博客 <input type="checkbox" checked={data.config.showBlog} onChange={(event) => updateConfig({ showBlog: event.target.checked })} /></label>
+        </section>
+
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-sm font-black text-slate-950">Hero 背景图</h2>
+              <p className="mt-1 text-xs font-medium text-slate-500">1 张为静态图，多张自动轮播</p>
+            </div>
+            <button className="rounded-lg bg-slate-100 p-2 text-slate-600 hover:bg-slate-200" onClick={addHeroImage}><Plus className="h-4 w-4" /></button>
+          </div>
+          {(data.config.heroImages ?? []).map((imageUrl, index) => (
+            <div key={`${imageUrl}-${index}`} className="grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
+              <div className="flex items-start gap-2">
+                <ImageUploadField label={`Hero 图片 ${index + 1}`} value={imageUrl} placeholder="例如：https://example.com/hero.jpg，或选择本地背景图" onChange={(nextImageUrl) => updateHeroImage(index, nextImageUrl)} />
+                <button className="mt-7 rounded-lg p-2 text-red-500 hover:bg-red-50" onClick={() => removeHeroImage(index)}><Trash2 className="h-4 w-4" /></button>
+              </div>
+            </div>
+          ))}
         </section>
 
         <section className="space-y-3">
@@ -210,30 +253,28 @@ export function EditorPanel() {
           {data.projects.map((project) => (
             <div key={project.id || project.slug} className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
               <div className="flex justify-between gap-2">
-                <input className={inputClass} value={project.title} onChange={(event) => upsertProject({ ...project, title: event.target.value, slug: slugify(event.target.value) })} />
+                <input className={inputClass} placeholder="例如：品牌官网改版" value={project.title} onChange={(event) => upsertProject({ ...project, title: event.target.value, slug: slugify(event.target.value) })} />
                 <button className="rounded-lg p-2 text-red-500 hover:bg-red-50" onClick={() => project.id && removeProject(project.id)}><Trash2 className="h-4 w-4" /></button>
               </div>
-              <input className={inputClass} value={project.category} onChange={(event) => upsertProject({ ...project, category: event.target.value })} />
-              <input className={inputClass} value={project.coverImage} onChange={(event) => upsertProject({ ...project, coverImage: event.target.value })} />
-              <input className={inputClass} placeholder="角色" value={project.role || ''} onChange={(event) => upsertProject({ ...project, role: event.target.value })} />
-              <input className={inputClass} placeholder="工具，例如 Figma, React" value={project.tools || ''} onChange={(event) => upsertProject({ ...project, tools: event.target.value })} />
-              <textarea className={inputClass} rows={2} value={project.description} onChange={(event) => upsertProject({ ...project, description: event.target.value })} />
-              <input className={inputClass} placeholder="项目链接" value={project.projectUrl || ''} onChange={(event) => upsertProject({ ...project, projectUrl: event.target.value })} />
-              <input className={inputClass} placeholder="源码链接" value={project.githubUrl || ''} onChange={(event) => upsertProject({ ...project, githubUrl: event.target.value })} />
+              <input className={inputClass} placeholder="例如：Web Design / Portfolio" value={project.category} onChange={(event) => upsertProject({ ...project, category: event.target.value })} />
+              <ImageUploadField label="封面图" value={project.coverImage} placeholder="例如：https://example.com/project-cover.jpg，或选择本地封面图" onChange={(coverImage) => upsertProject({ ...project, coverImage })} />
+              <input className={inputClass} placeholder="例如：产品设计 / 前端开发" value={project.role || ''} onChange={(event) => upsertProject({ ...project, role: event.target.value })} />
+              <input className={inputClass} placeholder="例如：Figma, React, Tailwind" value={project.tools || ''} onChange={(event) => upsertProject({ ...project, tools: event.target.value })} />
+              <textarea className={inputClass} rows={2} placeholder="例如：一句话说明项目目标和成果" value={project.description} onChange={(event) => upsertProject({ ...project, description: event.target.value })} />
+              <input className={inputClass} placeholder="例如：https://your-project.com" value={project.projectUrl || ''} onChange={(event) => upsertProject({ ...project, projectUrl: event.target.value })} />
+              <input className={inputClass} placeholder="例如：https://github.com/yourname/project" value={project.githubUrl || ''} onChange={(event) => upsertProject({ ...project, githubUrl: event.target.value })} />
               <div className="grid grid-cols-2 gap-2">
-                <input className={inputClass} placeholder="开始日期" value={project.startDate || ''} onChange={(event) => upsertProject({ ...project, startDate: event.target.value })} />
-                <input className={inputClass} placeholder="结束日期" value={project.endDate || ''} onChange={(event) => upsertProject({ ...project, endDate: event.target.value })} />
+                <input className={inputClass} placeholder="例如：2024-01" value={project.startDate || ''} onChange={(event) => upsertProject({ ...project, startDate: event.target.value })} />
+                <input className={inputClass} placeholder="例如：2024-06" value={project.endDate || ''} onChange={(event) => upsertProject({ ...project, endDate: event.target.value })} />
               </div>
-              <textarea className={inputClass} rows={3} placeholder="项目详细内容" value={project.content} onChange={(event) => upsertProject({ ...project, content: event.target.value })} />
+              <textarea className={inputClass} rows={3} placeholder="支持多行：背景、过程、成果..." value={project.content} onChange={(event) => upsertProject({ ...project, content: event.target.value })} />
               <div className="grid grid-cols-2 gap-2">
                 <select className={inputClass} value={project.status} onChange={(event) => upsertProject({ ...project, status: event.target.value as Project['status'] })}>
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>
                   <option value="archived">Archived</option>
                 </select>
-                <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-600">
-                  精选 <input type="checkbox" checked={project.isFeatured} onChange={(event) => upsertProject({ ...project, isFeatured: event.target.checked })} />
-                </label>
+                <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-600">精选 <input type="checkbox" checked={project.isFeatured} onChange={(event) => upsertProject({ ...project, isFeatured: event.target.checked })} /></label>
               </div>
               <div className="space-y-2 rounded-lg border border-slate-200 bg-white p-3">
                 <div className="flex items-center justify-between">
@@ -243,13 +284,31 @@ export function EditorPanel() {
                 {(project.images ?? []).map((image) => (
                   <div key={image.id || image.imageUrl} className="grid gap-2 rounded-md bg-slate-50 p-2">
                     <div className="flex gap-2">
-                      <input className={inputClass} placeholder="图片 URL" value={image.imageUrl} onChange={(event) => updateProjectImage(project, { ...image, imageUrl: event.target.value })} />
+                      <ImageUploadField label="图库图片" value={image.imageUrl} placeholder="例如：https://example.com/gallery-1.jpg，或选择本地图片" onChange={(imageUrl) => updateProjectImage(project, { ...image, imageUrl })} />
                       <button className="rounded-lg p-2 text-red-500 hover:bg-red-50" onClick={() => removeProjectImage(project, image.id)}><Trash2 className="h-4 w-4" /></button>
                     </div>
-                    <input className={inputClass} placeholder="图片说明" value={image.caption || ''} onChange={(event) => updateProjectImage(project, { ...image, caption: event.target.value })} />
+                    <input className={inputClass} placeholder="例如：首页视觉方案" value={image.caption || ''} onChange={(event) => updateProjectImage(project, { ...image, caption: event.target.value })} />
                   </div>
                 ))}
               </div>
+            </div>
+          ))}
+        </section>
+
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-black text-slate-950">荣誉奖项</h2>
+            <button className="rounded-lg bg-slate-100 p-2 text-slate-600 hover:bg-slate-200" onClick={addAward}><Plus className="h-4 w-4" /></button>
+          </div>
+          {data.awards.map((award) => (
+            <div key={award.id || award.title} className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+              <div className="flex justify-between gap-2">
+                <input className={inputClass} placeholder="例如：Awwwards Honorable Mention" value={award.title} onChange={(event) => upsertAward({ ...award, title: event.target.value })} />
+                <button className="rounded-lg p-2 text-red-500 hover:bg-red-50" onClick={() => award.id && removeAward(award.id)}><Trash2 className="h-4 w-4" /></button>
+              </div>
+              <input className={inputClass} placeholder="例如：Awwwards / 红点设计奖" value={award.issuer} onChange={(event) => upsertAward({ ...award, issuer: event.target.value })} />
+              <input className={inputClass} placeholder="例如：2025" value={award.date || ''} onChange={(event) => upsertAward({ ...award, date: event.target.value })} />
+              <textarea className={inputClass} rows={2} placeholder="例如：说明获奖原因或认可内容" value={award.description || ''} onChange={(event) => upsertAward({ ...award, description: event.target.value })} />
             </div>
           ))}
         </section>
@@ -262,7 +321,7 @@ export function EditorPanel() {
           {data.videos.map((video) => (
             <div key={video.id || video.videoUrl} className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
               <div className="flex justify-between gap-2">
-                <input className={inputClass} value={video.title} onChange={(event) => upsertVideo({ ...video, title: event.target.value })} />
+                <input className={inputClass} placeholder="例如：作品集讲解视频" value={video.title} onChange={(event) => upsertVideo({ ...video, title: event.target.value })} />
                 <button className="rounded-lg p-2 text-red-500 hover:bg-red-50" onClick={() => video.id && removeVideo(video.id)}><Trash2 className="h-4 w-4" /></button>
               </div>
               <select className={inputClass} value={video.platform} onChange={(event) => upsertVideo({ ...video, platform: event.target.value as VideoItem['platform'] })}>
@@ -271,12 +330,10 @@ export function EditorPanel() {
                 <option value="bilibili">Bilibili</option>
                 <option value="custom">Custom</option>
               </select>
-              <input className={inputClass} placeholder="视频 URL" value={video.videoUrl} onChange={(event) => upsertVideo({ ...video, videoUrl: event.target.value })} />
-              <input className={inputClass} placeholder="缩略图 URL" value={video.thumbnailUrl || ''} onChange={(event) => upsertVideo({ ...video, thumbnailUrl: event.target.value })} />
-              <textarea className={inputClass} rows={2} placeholder="视频描述" value={video.description || ''} onChange={(event) => upsertVideo({ ...video, description: event.target.value })} />
-              <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-600">
-                精选视频 <input type="checkbox" checked={video.isFeatured} onChange={(event) => upsertVideo({ ...video, isFeatured: event.target.checked })} />
-              </label>
+              <VideoUploadField label="视频文件 / 视频 URL" value={video.videoUrl} placeholder="例如：https://example.com/demo.mp4，或选择本地视频" onChange={(videoUrl) => upsertVideo({ ...video, videoUrl })} />
+              <ImageUploadField label="视频封面" value={video.thumbnailUrl || ''} actionLabel="选择封面" placeholder="例如：https://example.com/video-cover.jpg，或选择本地封面图" onChange={(thumbnailUrl) => upsertVideo({ ...video, thumbnailUrl })} />
+              <textarea className={inputClass} rows={2} placeholder="例如：介绍视频内容、亮点或演示流程" value={video.description || ''} onChange={(event) => upsertVideo({ ...video, description: event.target.value })} />
+              <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-600">精选视频 <input type="checkbox" checked={video.isFeatured} onChange={(event) => upsertVideo({ ...video, isFeatured: event.target.checked })} /></label>
             </div>
           ))}
         </section>
@@ -289,11 +346,22 @@ export function EditorPanel() {
           {data.experiences.map((experience) => (
             <div key={experience.id || experience.company} className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
               <div className="flex justify-between gap-2">
-                <input className={inputClass} value={experience.position} onChange={(event) => upsertExperience({ ...experience, position: event.target.value })} />
+                <input className={inputClass} placeholder="例如：高级前端工程师 / 视觉设计师" value={experience.position} onChange={(event) => upsertExperience({ ...experience, position: event.target.value })} />
                 <button className="rounded-lg p-2 text-red-500 hover:bg-red-50" onClick={() => experience.id && removeExperience(experience.id)}><Trash2 className="h-4 w-4" /></button>
               </div>
-              <input className={inputClass} value={experience.company} onChange={(event) => upsertExperience({ ...experience, company: event.target.value })} />
-              <textarea className={inputClass} rows={2} value={experience.description || ''} onChange={(event) => upsertExperience({ ...experience, description: event.target.value })} />
+              <input className={inputClass} placeholder="例如：某某科技 / 某某大学" value={experience.company} onChange={(event) => upsertExperience({ ...experience, company: event.target.value })} />
+              <div className="grid grid-cols-2 gap-2">
+                <select className={inputClass} value={experience.type} onChange={(event) => upsertExperience({ ...experience, type: event.target.value as Experience['type'] })}>
+                  <option value="work">工作经历</option>
+                  <option value="education">教育经历</option>
+                </select>
+                <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-600">至今 <input type="checkbox" checked={experience.isCurrent} onChange={(event) => upsertExperience({ ...experience, isCurrent: event.target.checked, endDate: event.target.checked ? '' : experience.endDate })} /></label>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <input className={inputClass} placeholder="例如：2022-09" value={experience.startDate} onChange={(event) => upsertExperience({ ...experience, startDate: event.target.value })} />
+                <input className={inputClass} placeholder={experience.isCurrent ? '当前经历无需填写' : '例如：2025-06'} value={experience.endDate || ''} disabled={experience.isCurrent} onChange={(event) => upsertExperience({ ...experience, endDate: event.target.value })} />
+              </div>
+              <textarea className={inputClass} rows={4} placeholder="支持多行：职责、成果、项目经验..." value={experience.description || ''} onChange={(event) => upsertExperience({ ...experience, description: event.target.value })} />
             </div>
           ))}
         </section>
@@ -305,8 +373,8 @@ export function EditorPanel() {
           </div>
           {data.skills.map((skill) => (
             <div key={skill.id || skill.name} className="grid grid-cols-[1fr_74px_36px] gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
-              <input className={inputClass} value={skill.name} onChange={(event) => upsertSkill({ ...skill, name: event.target.value })} />
-              <input className={inputClass} type="number" min={1} max={5} value={skill.proficiency} onChange={(event) => upsertSkill({ ...skill, proficiency: Number(event.target.value) as Skill['proficiency'] })} />
+              <input className={inputClass} placeholder="例如：React" value={skill.name} onChange={(event) => upsertSkill({ ...skill, name: event.target.value })} />
+              <input className={inputClass} type="number" min={1} max={5} placeholder="1-5" title="熟练度：1-5" value={skill.proficiency} onChange={(event) => upsertSkill({ ...skill, proficiency: Number(event.target.value) as Skill['proficiency'] })} />
               <button className="rounded-lg p-2 text-red-500 hover:bg-red-50" onClick={() => skill.id && removeSkill(skill.id)}><Trash2 className="h-4 w-4" /></button>
             </div>
           ))}
@@ -320,10 +388,10 @@ export function EditorPanel() {
           {data.socialLinks.map((social) => (
             <div key={social.id || social.url} className="space-y-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
               <div className="flex justify-between gap-2">
-                <input className={inputClass} value={social.platform} onChange={(event) => upsertSocialLink({ ...social, platform: event.target.value })} />
+                <input className={inputClass} placeholder="例如：GitHub / LinkedIn / 小红书" value={social.platform} onChange={(event) => upsertSocialLink({ ...social, platform: event.target.value })} />
                 <button className="rounded-lg p-2 text-red-500 hover:bg-red-50" onClick={() => social.id && removeSocialLink(social.id)}><Trash2 className="h-4 w-4" /></button>
               </div>
-              <input className={inputClass} value={social.url} onChange={(event) => upsertSocialLink({ ...social, url: event.target.value })} />
+              <input className={inputClass} placeholder="例如：https://github.com/yourname" value={social.url} onChange={(event) => upsertSocialLink({ ...social, url: event.target.value })} />
             </div>
           ))}
         </section>
