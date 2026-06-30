@@ -7,7 +7,7 @@ export function App() {
   const { data, templateId } = useSiteStore();
 
   return (
-    <main className="grid h-screen min-h-[720px] grid-cols-1 overflow-hidden bg-slate-100 lg:grid-cols-[420px_1fr]">
+    <main className="grid h-screen grid-cols-1 overflow-hidden bg-slate-100 lg:grid-cols-[420px_1fr]">
       <EditorPanel />
       <section className="min-h-0 overflow-hidden p-4">
         <div className="mb-3 flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
