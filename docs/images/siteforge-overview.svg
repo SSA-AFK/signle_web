@@ -1,0 +1,34 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" rx="36" fill="#0B1020"/>
+  <circle cx="1005" cy="108" r="210" fill="#7C3AED" opacity=".24"/>
+  <circle cx="246" cy="592" r="260" fill="#06B6D4" opacity=".16"/>
+  <path d="M0 120H1280M0 240H1280M0 360H1280M0 480H1280M0 600H1280M160 0V720M320 0V720M480 0V720M640 0V720M800 0V720M960 0V720M1120 0V720" stroke="white" stroke-opacity=".06"/>
+  <rect x="72" y="76" width="1136" height="568" rx="30" fill="white" fill-opacity=".08" stroke="white" stroke-opacity=".14"/>
+  <rect x="112" y="116" width="310" height="488" rx="24" fill="#F8FAFC"/>
+  <text x="144" y="164" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="800">SiteForge</text>
+  <text x="144" y="194" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600">Personal site generator</text>
+  <rect x="144" y="230" width="110" height="38" rx="10" fill="#0F172A"/>
+  <text x="177" y="254" fill="white" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800">Save</text>
+  <rect x="270" y="230" width="110" height="38" rx="10" fill="#4F46E5"/>
+  <text x="302" y="254" fill="white" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="800">Publish</text>
+  <rect x="144" y="306" width="236" height="54" rx="12" fill="#EEF2FF"/>
+  <rect x="144" y="378" width="236" height="54" rx="12" fill="#F1F5F9"/>
+  <rect x="144" y="450" width="236" height="54" rx="12" fill="#F1F5F9"/>
+  <rect x="144" y="522" width="236" height="42" rx="12" fill="#E0F2FE"/>
+  <rect x="470" y="116" width="698" height="488" rx="24" fill="#FAFAFC"/>
+  <rect x="502" y="148" width="634" height="70" rx="18" fill="white" stroke="#E2E8F0"/>
+  <circle cx="540" cy="183" r="18" fill="#4F46E5"/>
+  <rect x="574" y="172" width="96" height="22" rx="11" fill="#0F172A"/>
+  <rect x="730" y="174" width="48" height="18" rx="9" fill="#4F46E5"/>
+  <rect x="804" y="174" width="52" height="18" rx="9" fill="#CBD5E1"/>
+  <rect x="882" y="174" width="58" height="18" rx="9" fill="#CBD5E1"/>
+  <rect x="992" y="166" width="106" height="34" rx="10" fill="#0F172A"/>
+  <text x="640" y="306" text-anchor="middle" fill="#4F46E5" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="900" letter-spacing="5">LIVE PREVIEW</text>
+  <text x="819" y="374" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="900">Build a portfolio</text>
+  <text x="819" y="430" text-anchor="middle" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="58" font-weight="900">that feels alive</text>
+  <text x="819" y="474" text-anchor="middle" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="600">Form-driven templates, media modules, privacy-aware publishing.</text>
+  <rect x="688" y="520" width="120" height="44" rx="14" fill="#4F46E5"/>
+  <text x="748" y="548" text-anchor="middle" fill="white" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="900">Explore</text>
+  <rect x="824" y="520" width="126" height="44" rx="14" fill="white" stroke="#E2E8F0"/>
+  <text x="887" y="548" text-anchor="middle" fill="#334155" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="900">Preview</text>
+</svg>

@@ -1,0 +1,41 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" rx="36" fill="#0F172A"/>
+  <text x="80" y="92" fill="white" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="900">Privacy-aware publishing</text>
+  <text x="80" y="126" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="600">The editor keeps full data. Publishing creates a sanitized public copy.</text>
+  <g transform="translate(80 210)">
+    <rect width="270" height="310" rx="28" fill="white" fill-opacity=".08" stroke="white" stroke-opacity=".12"/>
+    <circle cx="54" cy="58" r="22" fill="#4F46E5"/>
+    <text x="88" y="64" fill="white" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="900">Form data</text>
+    <text x="36" y="116" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Profile</text>
+    <text x="36" y="156" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Projects + media</text>
+    <text x="36" y="196" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Experience</text>
+    <text x="36" y="236" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Social links</text>
+    <text x="36" y="276" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Videos / awards</text>
+  </g>
+  <path d="M380 365H500" stroke="#64748B" stroke-width="3" stroke-linecap="round"/>
+  <path d="M500 365L482 353M500 365L482 377" stroke="#64748B" stroke-width="3" stroke-linecap="round"/>
+  <g transform="translate(530 180)">
+    <rect width="330" height="370" rx="30" fill="white"/>
+    <text x="34" y="56" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="900">Publish settings</text>
+    <text x="34" y="88" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Choose what becomes public.</text>
+    <rect x="34" y="124" width="262" height="42" rx="12" fill="#EEF2FF"/>
+    <text x="54" y="150" fill="#4F46E5" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="900">Hide sensitive info</text>
+    <circle cx="270" cy="145" r="10" fill="#4F46E5"/>
+    <rect x="34" y="186" width="262" height="32" rx="10" fill="#F8FAFC"/>
+    <rect x="34" y="232" width="262" height="32" rx="10" fill="#F8FAFC"/>
+    <rect x="34" y="278" width="262" height="32" rx="10" fill="#F8FAFC"/>
+    <rect x="34" y="324" width="156" height="34" rx="12" fill="#0F172A"/>
+    <text x="112" y="346" text-anchor="middle" fill="white" font-family="Inter, Arial, sans-serif" font-size="13" font-weight="900">Publish link</text>
+  </g>
+  <path d="M890 365H1010" stroke="#64748B" stroke-width="3" stroke-linecap="round"/>
+  <path d="M1010 365L992 353M1010 365L992 377" stroke="#64748B" stroke-width="3" stroke-linecap="round"/>
+  <g transform="translate(1038 210)">
+    <rect width="162" height="310" rx="28" fill="#DCFCE7"/>
+    <circle cx="81" cy="76" r="34" fill="#16A34A"/>
+    <path d="M66 77L77 88L99 62" stroke="white" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="81" y="142" text-anchor="middle" fill="#14532D" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="900">Public URL</text>
+    <text x="81" y="180" text-anchor="middle" fill="#166534" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Template HTML</text>
+    <text x="81" y="208" text-anchor="middle" fill="#166534" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Sanitized data</text>
+    <text x="81" y="236" text-anchor="middle" fill="#166534" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Share ready</text>
+  </g>
+</svg>

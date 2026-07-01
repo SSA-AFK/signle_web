@@ -1,0 +1,52 @@
+<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1280" height="720" rx="36" fill="#F8FAFC"/>
+  <text x="80" y="92" fill="#0F172A" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="900">Template System</text>
+  <text x="80" y="126" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="600">Every HTML reference becomes an independent React template.</text>
+  <g transform="translate(80 176)">
+    <rect width="340" height="210" rx="26" fill="#1B1038"/>
+    <circle cx="270" cy="52" r="70" fill="#D946EF" opacity=".35"/>
+    <text x="30" y="54" fill="white" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="900">Aqua</text>
+    <text x="30" y="88" fill="#C4B5FD" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Glassmorphism / orbit motion</text>
+    <rect x="30" y="128" width="82" height="22" rx="11" fill="#8570EE"/>
+    <rect x="124" y="128" width="58" height="22" rx="11" fill="#D946EF"/>
+    <path d="M226 142C266 112 310 112 324 142C294 172 252 172 226 142Z" stroke="#A78BFA" stroke-width="2"/>
+  </g>
+  <g transform="translate(470 176)">
+    <rect width="340" height="210" rx="26" fill="#0B0F19"/>
+    <path d="M0 168C86 118 156 204 236 142C282 106 310 88 340 94V210H0V168Z" fill="#00E699" opacity=".18"/>
+    <text x="30" y="54" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="900">Solace</text>
+    <text x="30" y="88" fill="#86EFAC" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Editorial / cinematic portfolio</text>
+    <rect x="30" y="130" width="120" height="38" rx="19" fill="#00E699"/>
+    <text x="90" y="154" text-anchor="middle" fill="#04130F" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="900">Explore</text>
+  </g>
+  <g transform="translate(860 176)">
+    <rect width="340" height="210" rx="26" fill="white" stroke="#E2E8F0"/>
+    <rect x="24" y="28" width="292" height="42" rx="14" fill="#EEF2FF"/>
+    <text x="30" y="114" fill="#0B0F19" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="900">Jakarta</text>
+    <text x="30" y="148" fill="#64748B" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Clean SaaS product portfolio</text>
+    <rect x="30" y="170" width="92" height="20" rx="10" fill="#4F46E5"/>
+  </g>
+  <g transform="translate(80 440)">
+    <rect width="340" height="180" rx="26" fill="#020617"/>
+    <path d="M0 0H340V180H0V0Z" fill="url(#scan)"/>
+    <text x="30" y="58" fill="#67E8F9" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="900">Aura</text>
+    <text x="30" y="92" fill="#94A3B8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Cyberpunk / terminal motion</text>
+  </g>
+  <g transform="translate(470 440)">
+    <rect width="340" height="180" rx="26" fill="#FAF7F2"/>
+    <circle cx="250" cy="92" r="62" fill="#111827" opacity=".12"/>
+    <text x="30" y="58" fill="#111827" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="900">Elena</text>
+    <text x="30" y="92" fill="#6B7280" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Creator / visual storytelling</text>
+  </g>
+  <g transform="translate(860 440)">
+    <rect width="340" height="180" rx="26" fill="#F5F3FF"/>
+    <rect x="30" y="110" width="280" height="42" rx="21" fill="#7C3AED"/>
+    <text x="30" y="58" fill="#4C1D95" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="900">Snowly</text>
+    <text x="30" y="92" fill="#7C3AED" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700">Service-inspired personal site</text>
+  </g>
+  <defs>
+    <pattern id="scan" width="12" height="12" patternUnits="userSpaceOnUse">
+      <path d="M0 6H12" stroke="#22D3EE" stroke-opacity=".12"/>
+    </pattern>
+  </defs>
+</svg>
