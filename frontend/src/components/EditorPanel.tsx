@@ -35,6 +35,13 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 
 const inputClass = 'w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 outline-none transition focus:border-purple-700 focus:ring-4 focus:ring-purple-100';
 
+function toMonthInputValue(value?: string) {
+  if (!value) return '';
+  if (/^\d{4}-\d{2}$/.test(value)) return value;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value.slice(0, 7);
+  return '';
+}
+
 export function EditorPanel() {
   const { data, templateId, setTemplateId, updateUser, updateConfig, upsertProject, removeProject, upsertExperience, removeExperience, upsertSkill, removeSkill, upsertAward, removeAward, upsertSocialLink, removeSocialLink, upsertVideo, removeVideo, reset } = useSiteStore();
   const [publishedUrl, setPublishedUrl] = useState('');
@@ -313,8 +320,8 @@ export function EditorPanel() {
               <input className={inputClass} placeholder="例如：https://your-project.com" value={project.projectUrl || ''} onChange={(event) => upsertProject({ ...project, projectUrl: event.target.value })} />
               <input className={inputClass} placeholder="例如：https://github.com/yourname/project" value={project.githubUrl || ''} onChange={(event) => upsertProject({ ...project, githubUrl: event.target.value })} />
               <div className="grid grid-cols-2 gap-2">
-                <input className={inputClass} placeholder="例如：2024-01" value={project.startDate || ''} onChange={(event) => upsertProject({ ...project, startDate: event.target.value })} />
-                <input className={inputClass} placeholder="例如：2024-06" value={project.endDate || ''} onChange={(event) => upsertProject({ ...project, endDate: event.target.value })} />
+                <input className={inputClass} type="month" value={toMonthInputValue(project.startDate)} onChange={(event) => upsertProject({ ...project, startDate: event.target.value })} />
+                <input className={inputClass} type="month" value={toMonthInputValue(project.endDate)} onChange={(event) => upsertProject({ ...project, endDate: event.target.value })} />
               </div>
               <textarea className={inputClass} rows={3} placeholder="支持多行：背景、过程、成果..." value={project.content} onChange={(event) => upsertProject({ ...project, content: event.target.value })} />
               <div className="grid grid-cols-2 gap-2">
@@ -356,7 +363,7 @@ export function EditorPanel() {
                 <button className="rounded-lg p-2 text-red-500 hover:bg-red-50" onClick={() => award.id && removeAward(award.id)}><Trash2 className="h-4 w-4" /></button>
               </div>
               <input className={inputClass} placeholder="例如：Awwwards / 红点设计奖" value={award.issuer} onChange={(event) => upsertAward({ ...award, issuer: event.target.value })} />
-              <input className={inputClass} placeholder="例如：2025" value={award.date || ''} onChange={(event) => upsertAward({ ...award, date: event.target.value })} />
+              <input className={inputClass} type="month" value={toMonthInputValue(award.date)} onChange={(event) => upsertAward({ ...award, date: event.target.value })} />
               <textarea className={inputClass} rows={2} placeholder="例如：说明获奖原因或认可内容" value={award.description || ''} onChange={(event) => upsertAward({ ...award, description: event.target.value })} />
             </div>
           ))}
@@ -407,8 +414,8 @@ export function EditorPanel() {
                 <label className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-xs font-bold text-slate-600">至今 <input type="checkbox" checked={experience.isCurrent} onChange={(event) => upsertExperience({ ...experience, isCurrent: event.target.checked, endDate: event.target.checked ? '' : experience.endDate })} /></label>
               </div>
               <div className="grid grid-cols-2 gap-2">
-                <input className={inputClass} placeholder="例如：2022-09" value={experience.startDate} onChange={(event) => upsertExperience({ ...experience, startDate: event.target.value })} />
-                <input className={inputClass} placeholder={experience.isCurrent ? '当前经历无需填写' : '例如：2025-06'} value={experience.endDate || ''} disabled={experience.isCurrent} onChange={(event) => upsertExperience({ ...experience, endDate: event.target.value })} />
+                <input className={inputClass} type="month" value={toMonthInputValue(experience.startDate)} onChange={(event) => upsertExperience({ ...experience, startDate: event.target.value })} />
+                <input className={inputClass} type="month" value={toMonthInputValue(experience.endDate)} disabled={experience.isCurrent} onChange={(event) => upsertExperience({ ...experience, endDate: event.target.value })} />
               </div>
               <textarea className={inputClass} rows={4} placeholder="支持多行：职责、成果、项目经验..." value={experience.description || ''} onChange={(event) => upsertExperience({ ...experience, description: event.target.value })} />
             </div>
