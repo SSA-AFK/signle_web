@@ -15,7 +15,6 @@ export interface PrivacySettings {
   showExperienceDetails: boolean;
   showAwards: boolean;
   showVideoLinks: boolean;
-  showBlogPosts: boolean;
 }
 
 export const defaultPrivacySettings: PrivacySettings = {
@@ -32,8 +31,7 @@ export const defaultPrivacySettings: PrivacySettings = {
   showCompanyNames: true,
   showExperienceDetails: false,
   showAwards: true,
-  showVideoLinks: true,
-  showBlogPosts: false
+  showVideoLinks: true
 };
 
 export function sanitizeSiteData(data: SiteData, settings: PrivacySettings): SiteData {
@@ -53,8 +51,7 @@ export function sanitizeSiteData(data: SiteData, settings: PrivacySettings): Sit
       ...data.config,
       heroImages: settings.showHeroImages ? data.config.heroImages : [],
       showAwards: data.config.showAwards && settings.showAwards,
-      showVideos: data.config.showVideos && settings.showVideoLinks,
-      showBlog: data.config.showBlog && settings.showBlogPosts
+      showVideos: data.config.showVideos && settings.showVideoLinks
     },
     projects: data.projects.map((project) => ({
       ...project,
@@ -71,7 +68,6 @@ export function sanitizeSiteData(data: SiteData, settings: PrivacySettings): Sit
     })),
     awards: settings.showAwards ? data.awards : [],
     socialLinks: settings.showSocialLinks ? data.socialLinks : [],
-    blogPosts: settings.showBlogPosts ? data.blogPosts : [],
     videos: settings.showVideoLinks ? data.videos : []
   };
 }
@@ -93,6 +89,5 @@ export function summarizeHiddenFields(data: SiteData, settings: PrivacySettings)
   if (!settings.showExperienceDetails && data.experiences.some((experience) => experience.description)) hidden.push('经历详情');
   if (!settings.showAwards && data.awards.length) hidden.push('荣誉奖项');
   if (!settings.showVideoLinks && data.videos.length) hidden.push('视频模块');
-  if (!settings.showBlogPosts && data.blogPosts.length) hidden.push('博客文章');
   return hidden;
 }

@@ -100,7 +100,6 @@ export function PublishSettingsModal({ data, templateId, settings, isPublishing,
             <Toggle label="公开经历详情" description="关闭后保留职位和时间，隐藏多行职责、内部项目和交付细节。" checked={settings.showExperienceDetails} disabled={privacyDisabled} onChange={(showExperienceDetails) => patch({ showExperienceDetails })} />
             <Toggle label="公开荣誉奖项" description="关闭后公开页不展示奖项模块。" checked={settings.showAwards} disabled={privacyDisabled} onChange={(showAwards) => patch({ showAwards })} />
             <Toggle label="公开视频模块" description="关闭后公开页不展示视频，适合视频链接未确认权限时使用。" checked={settings.showVideoLinks} disabled={privacyDisabled} onChange={(showVideoLinks) => patch({ showVideoLinks })} />
-            <Toggle label="公开博客文章" description="默认关闭，避免发布尚未审阅的文章正文。" checked={settings.showBlogPosts} disabled={privacyDisabled} onChange={(showBlogPosts) => patch({ showBlogPosts })} />
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">

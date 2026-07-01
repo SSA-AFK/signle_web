@@ -20,18 +20,7 @@ describe('privacy publishing helpers', () => {
         ...experience,
         company: 'Confidential Studio',
         description: 'Internal delivery details'
-      })),
-      blogPosts: [
-        {
-          id: 1,
-          title: 'Draft insight',
-          slug: 'draft-insight',
-          content: 'Sensitive draft',
-          tags: [],
-          viewCount: 0,
-          status: 'draft' as const
-        }
-      ]
+      }))
     };
 
     const publicData = sanitizeSiteData(source, {
@@ -60,7 +49,6 @@ describe('privacy publishing helpers', () => {
     expect(publicData.experiences[0].description).toBe('');
     expect(publicData.awards).toEqual([]);
     expect(publicData.videos).toEqual([]);
-    expect(publicData.blogPosts).toEqual([]);
     expect(source.user.email).toBe('hello@example.com');
     expect(source.user.avatarUrl).toBe('https://example.com/avatar.jpg');
     expect(source.projects[0].githubUrl).toBe('https://github.com/private/project');
