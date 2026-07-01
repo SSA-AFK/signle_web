@@ -262,7 +262,7 @@ export function TemplateJakarta({ data }: { data: SiteData }) {
         </div>
       </section>
 
-      {data.config.showSkills && skills.length ? (
+      {false && data.config.showSkills && skills.length ? (
         <section id="skills" className="border-y border-slate-100 bg-white py-16">
           <div className="mx-auto max-w-7xl px-8">
             <p className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">{skillsCopy.label}</p>
@@ -307,6 +307,34 @@ export function TemplateJakarta({ data }: { data: SiteData }) {
             <SectionTitle label={videosCopy.label} title={videosCopy.title} copy={videosCopy.description} />
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               {videos.map((video, index) => <VideoCard key={video.id || video.videoUrl} video={video} index={index} />)}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {data.config.showSkills && skills.length ? (
+        <section id="skills" className="border-y border-slate-100 bg-white py-16">
+          <div className="mx-auto max-w-7xl px-8">
+            <p className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">{skillsCopy.label}</p>
+            <h2 className="mb-10 text-center text-3xl font-extrabold tracking-tight text-[#0B0F19]">{skillsCopy.title}</h2>
+            <div className="grid grid-cols-1 overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 sm:grid-cols-2 lg:grid-cols-5">
+              {skills.slice(0, 10).map((skill) => (
+                <div key={skill.id || skill.name} className="border-b border-r border-slate-100 bg-white px-6 py-7 transition hover:bg-slate-50/50">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="flex min-w-0 items-center gap-1.5 text-sm font-extrabold tracking-wide text-slate-700"><Sparkles className="h-4 w-4 flex-none text-indigo-500" /> <span className="truncate">{skill.name}</span></span>
+                    <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-[10px] font-black text-indigo-600">{skill.proficiency}/5</span>
+                  </div>
+                  {skill.category ? <p className="mt-2 truncate text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">{skill.category}</p> : null}
+                  <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-slate-100">
+                    <span className="block h-full rounded-full bg-indigo-600" style={{ width: `${skill.proficiency * 20}%` }} />
+                  </div>
+                  <div className="mt-3 grid grid-cols-5 gap-1.5" aria-label={`Skill level ${skill.proficiency}/5`}>
+                    {Array.from({ length: 5 }, (_, index) => (
+                      <span key={index} className={`h-1.5 rounded-full ${index < skill.proficiency ? 'bg-indigo-500' : 'bg-slate-100'}`} />
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </section>
