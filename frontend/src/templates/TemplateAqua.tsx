@@ -60,7 +60,23 @@ export function TemplateAqua({ data }: { data: SiteData }) {
 
   function scrollToSection(sectionId: string, event?: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) {
     event?.preventDefault();
-    document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const target = document.getElementById(sectionId);
+    const preview = document.getElementById('preview');
+    if (!target) return;
+
+    if (preview?.contains(target)) {
+      const previewRect = preview.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      preview.scrollTo({
+        top: preview.scrollTop + targetRect.top - previewRect.top,
+        behavior: 'smooth'
+      });
+      window.history.replaceState(null, '', `#${sectionId}`);
+      return;
+    }
+
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.history.replaceState(null, '', `#${sectionId}`);
   }
 
   function ProjectMiniCard({ project, side }: { project?: Project; side: 'left' | 'right' }) {
@@ -240,7 +256,7 @@ export function TemplateAqua({ data }: { data: SiteData }) {
       <div className="aqua-content">
         <header className="aqua-header aqua-reveal" style={{ animationDelay: '0.1s' }}>
           <nav className="aqua-nav">
-            <a href="#works" onClick={(event) => scrollToSection('works', event)}>Works</a>
+            <a href="#projects" onClick={(event) => scrollToSection('projects', event)}>Works</a>
             <a href="#about" onClick={(event) => scrollToSection('about', event)}>About</a>
             {data.config.showSkills && skills.length ? <a href="#skills" onClick={(event) => scrollToSection('skills', event)}>Skills</a> : null}
             <a href="#contact" onClick={(event) => scrollToSection('contact', event)}>Contact</a>
@@ -255,7 +271,7 @@ export function TemplateAqua({ data }: { data: SiteData }) {
         <main className="aqua-main" id="top">
           <section className="aqua-hero" id="about">
             <div className="aqua-metric-stack aqua-reveal" style={{ animationDelay: '0.35s' }}>
-              <button className="aqua-circle-btn" type="button" onClick={(event) => scrollToSection('works', event)}>↘</button>
+              <button className="aqua-circle-btn" type="button" onClick={(event) => scrollToSection('projects', event)}>↘</button>
               <div className="aqua-metric"><strong>{metricYears}</strong><span>Experience</span></div>
               <div className="aqua-metric"><strong>{projects.length}+</strong><span>Delivered Projects</span></div>
             </div>
@@ -294,7 +310,7 @@ export function TemplateAqua({ data }: { data: SiteData }) {
           </section>
 
           {projects.length ? (
-            <section className="aqua-deck aqua-reveal" id="works" onMouseMove={handleDeckMove} onMouseLeave={resetDeck} style={{ animationDelay: '0.5s' }}>
+            <section className="aqua-deck aqua-reveal" id="projects" onMouseMove={handleDeckMove} onMouseLeave={resetDeck} style={{ animationDelay: '0.5s' }}>
               <ProjectMiniCard project={leftProject} side="left" />
               {featuredProject ? (
                 <div ref={centerCardRef} className="aqua-glass aqua-project-card aqua-card-center">
@@ -412,7 +428,7 @@ export function TemplateAqua({ data }: { data: SiteData }) {
             <h3 className="aqua-footer-title">Navigate</h3>
             <nav className="aqua-footer-links">
               <a href="#about" onClick={(event) => scrollToSection('about', event)}>About</a>
-              <a href="#works" onClick={(event) => scrollToSection('works', event)}>Works</a>
+              <a href="#projects" onClick={(event) => scrollToSection('projects', event)}>Works</a>
               {data.config.showSkills && skills.length ? <a href="#skills" onClick={(event) => scrollToSection('skills', event)}>Skills</a> : null}
               <a href="#contact" onClick={(event) => scrollToSection('contact', event)}>Contact</a>
             </nav>
