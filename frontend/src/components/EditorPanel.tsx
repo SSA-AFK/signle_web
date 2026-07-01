@@ -1,6 +1,7 @@
 import { ExternalLink, Plus, RotateCcw, Save, Trash2 } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
-import type { Award, Experience, Project, ProjectImage, Skill, SocialLink, TemplateId, VideoItem } from '@siteforge/shared';
+import { defaultConfig } from '@siteforge/shared';
+import type { Award, Experience, Project, ProjectImage, SectionCopy, SectionKey, Skill, SocialLink, TemplateId, VideoItem } from '@siteforge/shared';
 import { useSiteStore } from '../store/siteStore';
 import { publishSite } from '../utils/exportHtml';
 import { defaultPrivacySettings, type PrivacySettings } from '../utils/privacy';
@@ -36,6 +37,15 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 const inputClass = 'w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-800 outline-none transition focus:border-purple-700 focus:ring-4 focus:ring-purple-100';
 const rangeInputClass = 'w-full accent-blue-600';
 
+const sectionCopyFields: Array<{ key: SectionKey; name: string; hint: string; needs?: 'experience' | 'skills' | 'videos' | 'awards' }> = [
+  { key: 'projects', name: 'Work / Projects', hint: '作品项目模块' },
+  { key: 'experience', name: 'Experience', hint: '经历时间线模块', needs: 'experience' },
+  { key: 'skills', name: 'Skills', hint: '技能模块', needs: 'skills' },
+  { key: 'videos', name: 'Videos', hint: '视频展示模块', needs: 'videos' },
+  { key: 'awards', name: 'Awards', hint: '荣誉奖项模块', needs: 'awards' },
+  { key: 'contact', name: 'Contact', hint: '联系模块' }
+];
+
 function toMonthInputValue(value?: string) {
   if (!value) return '';
   if (/^\d{4}-\d{2}$/.test(value)) return value;
@@ -58,6 +68,36 @@ export function EditorPanel() {
     aqua: { primaryColor: false, heroImages: false, layout: true, awards: true, videos: true, blog: false }
   }[templateId];
   const shouldHidePrimaryColor = !templateCapabilities.primaryColor;
+
+  function getEditableSectionCopy(key: SectionKey): Required<SectionCopy> {
+    const defaults = defaultConfig.sectionCopies?.[key] ?? {};
+    const current = data.config.sectionCopies?.[key] ?? {};
+    return {
+      label: current.label ?? defaults.label ?? '',
+      title: current.title ?? defaults.title ?? '',
+      description: current.description ?? defaults.description ?? ''
+    };
+  }
+
+  function updateSectionCopy(key: SectionKey, patch: SectionCopy) {
+    updateConfig({
+      sectionCopies: {
+        ...(data.config.sectionCopies ?? {}),
+        [key]: {
+          ...(data.config.sectionCopies?.[key] ?? {}),
+          ...patch
+        }
+      }
+    });
+  }
+
+  function isSectionCopyVisible(field: (typeof sectionCopyFields)[number]) {
+    if (field.needs === 'experience') return data.config.showExperience;
+    if (field.needs === 'skills') return data.config.showSkills;
+    if (field.needs === 'videos') return templateCapabilities.videos && data.config.showVideos;
+    if (field.needs === 'awards') return templateCapabilities.awards && data.config.showAwards;
+    return true;
+  }
 
   async function saveToServer() {
     const response = await fetch('/api/site/local', {
@@ -282,6 +322,33 @@ export function EditorPanel() {
           {templateCapabilities.videos ? <label className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm font-bold text-slate-700">显示视频 <input type="checkbox" checked={data.config.showVideos} onChange={(event) => updateConfig({ showVideos: event.target.checked })} /></label> : null}
           {templateCapabilities.awards ? <label className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm font-bold text-slate-700">显示荣誉奖项 <input type="checkbox" checked={data.config.showAwards} onChange={(event) => updateConfig({ showAwards: event.target.checked })} /></label> : null}
           {templateCapabilities.blog ? <label className="flex items-center justify-between rounded-lg border border-slate-200 p-3 text-sm font-bold text-slate-700">显示博客 <input type="checkbox" checked={data.config.showBlog} onChange={(event) => updateConfig({ showBlog: event.target.checked })} /></label> : null}
+        </section>
+
+        <section className="space-y-3">
+          <div>
+            <h2 className="text-sm font-black text-slate-950">模块标题文案</h2>
+            <p className="mt-1 text-xs font-medium text-slate-500">这里编辑各模块的标签、主标题和副标题。Aqua 的 About 标题已合并到个人信息中。</p>
+          </div>
+          {sectionCopyFields.filter((field) => field.key !== 'about').filter(isSectionCopyVisible).map((field) => {
+            const copy = getEditableSectionCopy(field.key);
+            return (
+              <div key={field.key} className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-wide text-slate-700">{field.name}</p>
+                  <p className="mt-1 text-[11px] font-medium text-slate-400">{field.hint}</p>
+                </div>
+                <Field label="标签">
+                  <input className={inputClass} placeholder="例如：Selected Work" value={copy.label} onChange={(event) => updateSectionCopy(field.key, { label: event.target.value })} />
+                </Field>
+                <Field label="主标题">
+                  <input className={inputClass} placeholder="例如：Recent projects with practical depth." value={copy.title} onChange={(event) => updateSectionCopy(field.key, { title: event.target.value })} />
+                </Field>
+                <Field label="副标题 / 描述">
+                  <textarea className={inputClass} rows={2} placeholder="例如：用一句话说明这个模块展示的内容。" value={copy.description} onChange={(event) => updateSectionCopy(field.key, { description: event.target.value })} />
+                </Field>
+              </div>
+            );
+          })}
         </section>
 
         {templateCapabilities.heroImages ? <section className="space-y-3">

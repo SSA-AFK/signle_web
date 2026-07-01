@@ -1,6 +1,7 @@
 import { AlertTriangle, ArrowRight, Award as AwardIcon, BriefcaseBusiness, ChevronLeft, ChevronRight, Github, Linkedin, Mail, MapPin, PhoneCall, Sparkles, Star, Wand2 } from 'lucide-react';
 import type { CSSProperties } from 'react';
 import { useEffect, useState } from 'react';
+import { getAboutSectionCopy, getSectionCopy } from '@siteforge/shared';
 import type { Award, Project, SiteData, SocialLink } from '@siteforge/shared';
 
 interface TemplateSnowlyProps {
@@ -143,6 +144,13 @@ export function TemplateSnowly({ data }: TemplateSnowlyProps) {
   const showHeroControls = heroImages.length > 1;
   const navLinkClass = (sectionId: string) =>
     `relative py-1 transition-colors hover:text-slate-950 ${activeSection === sectionId ? 'text-slate-950' : ''}`;
+  const aboutCopy = getAboutSectionCopy(data, { label: 'About', title: 'A focused space for your work, story, and capabilities.' });
+  const projectsCopy = getSectionCopy(data, 'projects', { label: 'Selected Work', title: 'Recent projects with practical depth.' });
+  const awardsCopy = getSectionCopy(data, 'awards', { label: 'Awards', title: 'Honors and professional recognition.' });
+  const skillsCopy = getSectionCopy(data, 'skills', { label: 'Skills', title: 'Tools and strengths.' });
+  const videosCopy = getSectionCopy(data, 'videos', { label: 'Video', title: 'Stories, demos, and walkthroughs.' });
+  const experienceCopy = getSectionCopy(data, 'experience', { label: 'Experience', title: 'Experience' });
+  const contactCopy = getSectionCopy(data, 'contact', { label: 'Contact', title: 'Available for selected collaborations', description: 'Portfolio reviews, freelance projects, and role opportunities can start here.' });
 
   function showHeroImage(index: number) {
     if (!heroImages.length) return;
@@ -341,9 +349,10 @@ export function TemplateSnowly({ data }: TemplateSnowlyProps) {
         <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div className="max-w-2xl" data-aos="fade-up">
             <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-purple-100 px-3 py-1 text-xs font-extrabold uppercase tracking-wider" style={textColor(primaryColor)}>
-              <Sparkles className="h-4 w-4" /> About
+              <Sparkles className="h-4 w-4" /> {aboutCopy.label}
             </span>
-            <h2 className="text-3xl font-black leading-tight text-slate-950 md:text-5xl">A focused space for your work, story, and capabilities.</h2>
+            <h2 className="text-3xl font-black leading-tight text-slate-950 md:text-5xl">{aboutCopy.title}</h2>
+            {aboutCopy.description ? <p className="mt-4 text-sm leading-7 text-slate-500">{aboutCopy.description}</p> : null}
           </div>
         </div>
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-center">
@@ -371,9 +380,10 @@ export function TemplateSnowly({ data }: TemplateSnowlyProps) {
           <div className="mx-auto max-w-7xl">
             <div className="mb-12 max-w-2xl" data-aos="fade-up">
               <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-extrabold uppercase tracking-wider" style={textColor(primaryColor)}>
-                <BriefcaseBusiness className="h-4 w-4" /> Selected Work
+                <BriefcaseBusiness className="h-4 w-4" /> {projectsCopy.label}
               </span>
-              <h2 className="text-3xl font-black text-slate-950 md:text-5xl">Recent projects with practical depth.</h2>
+              <h2 className="text-3xl font-black text-slate-950 md:text-5xl">{projectsCopy.title}</h2>
+              {projectsCopy.description ? <p className="mt-4 text-sm leading-7 text-slate-500">{projectsCopy.description}</p> : null}
             </div>
             <div className={`grid gap-6 ${config.layout === 'list' ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-2'}`}>
               {visibleProjects.map((project, index) => (
@@ -389,9 +399,10 @@ export function TemplateSnowly({ data }: TemplateSnowlyProps) {
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 max-w-2xl" data-aos="fade-up">
               <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-extrabold uppercase tracking-wider shadow-sm" style={textColor(primaryColor)}>
-                <AwardIcon className="h-4 w-4" /> Awards
+                <AwardIcon className="h-4 w-4" /> {awardsCopy.label}
               </span>
-              <h2 className="text-3xl font-black text-slate-950 md:text-5xl">荣誉奖项与专业认可。</h2>
+              <h2 className="text-3xl font-black text-slate-950 md:text-5xl">{awardsCopy.title}</h2>
+              {awardsCopy.description ? <p className="mt-4 text-sm leading-7 text-slate-500">{awardsCopy.description}</p> : null}
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {visibleAwards.map((award, index) => (
@@ -406,9 +417,10 @@ export function TemplateSnowly({ data }: TemplateSnowlyProps) {
         <section id="skills" className="sf-reveal mx-auto max-w-7xl px-4 py-20 md:px-8">
           <div className="mb-10 max-w-2xl" data-aos="fade-up">
             <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-purple-100 px-3 py-1 text-xs font-extrabold uppercase tracking-wider" style={textColor(primaryColor)}>
-              <Wand2 className="h-4 w-4" /> Skills
+              <Wand2 className="h-4 w-4" /> {skillsCopy.label}
             </span>
-            <h2 className="text-3xl font-black text-slate-950 md:text-5xl">Tools and strengths.</h2>
+            <h2 className="text-3xl font-black text-slate-950 md:text-5xl">{skillsCopy.title}</h2>
+            {skillsCopy.description ? <p className="mt-4 text-sm leading-7 text-slate-500">{skillsCopy.description}</p> : null}
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {visibleSkills.map((skill, index) => (
@@ -431,9 +443,10 @@ export function TemplateSnowly({ data }: TemplateSnowlyProps) {
           <div className="mx-auto max-w-7xl">
             <div className="mb-10 max-w-2xl" data-aos="fade-up">
               <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-extrabold uppercase tracking-wider" style={textColor(primaryColor)}>
-                <Sparkles className="h-4 w-4" /> Video
+                <Sparkles className="h-4 w-4" /> {videosCopy.label}
               </span>
-              <h2 className="text-3xl font-black text-slate-950 md:text-5xl">Stories, demos, and walkthroughs.</h2>
+              <h2 className="text-3xl font-black text-slate-950 md:text-5xl">{videosCopy.title}</h2>
+              {videosCopy.description ? <p className="mt-4 text-sm leading-7 text-slate-500">{videosCopy.description}</p> : null}
             </div>
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               {visibleVideos.map((video, index) => (
@@ -470,7 +483,11 @@ export function TemplateSnowly({ data }: TemplateSnowlyProps) {
       {config.showExperience && visibleExperiences.length > 0 ? (
         <section className="sf-reveal bg-slate-50 px-4 py-20 md:px-8">
           <div className="mx-auto max-w-7xl">
-            <h2 data-aos="fade-up" className="mb-10 text-3xl font-black text-slate-950 md:text-5xl">Experience</h2>
+            <div data-aos="fade-up" className="mb-10 max-w-2xl">
+              <span className="mb-4 inline-flex rounded-full bg-white px-3 py-1 text-xs font-extrabold uppercase tracking-wider" style={textColor(primaryColor)}>{experienceCopy.label}</span>
+              <h2 className="text-3xl font-black text-slate-950 md:text-5xl">{experienceCopy.title}</h2>
+              {experienceCopy.description ? <p className="mt-4 text-sm leading-7 text-slate-500">{experienceCopy.description}</p> : null}
+            </div>
             <div className="grid gap-4">
               {visibleExperiences.map((experience, index) => (
                 <div key={experience.id || `${experience.company}-${experience.startDate}`} data-aos="fade-up" style={{ transitionDelay: `${(index % 3) * 100}ms` }} className="rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
@@ -502,8 +519,8 @@ export function TemplateSnowly({ data }: TemplateSnowlyProps) {
                 <p className="mt-1 text-xs font-light text-white/75">作品交流、项目合作或职位机会，都可以从这里开始。</p>
               </div>
               <div>
-                <h2 className="text-xl font-black md:text-2xl">Available for selected collaborations</h2>
-                <p className="mt-1 text-xs font-light text-white/75">Portfolio reviews, freelance projects, and role opportunities can start here.</p>
+                <h2 className="text-xl font-black md:text-2xl">{contactCopy.title}</h2>
+                <p className="mt-1 text-xs font-light text-white/75">{contactCopy.description}</p>
               </div>
             </div>
             <a href={user.email ? `mailto:${user.email}` : '#contact'} className="flex items-center gap-3.5 rounded-2xl bg-white px-6 py-3.5 text-slate-950 shadow-xl transition hover:scale-105 hover:shadow-2xl active:scale-95">

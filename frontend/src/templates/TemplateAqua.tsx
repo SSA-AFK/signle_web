@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState, type CSSProperties } from 'react';
+import { getAboutSectionCopy, getSectionCopy } from '@siteforge/shared';
 import type { Project, SiteData } from '@siteforge/shared';
 
 function byOrder<T extends { displayOrder: number }>(items: T[]) {
@@ -48,6 +49,16 @@ export function TemplateAqua({ data }: { data: SiteData }) {
   );
 
   const metricYears = data.experiences.length ? `${Math.max(1, data.experiences.length)}+` : '1+';
+  const aboutCopy = getAboutSectionCopy(data, { label: 'Now booking new collaborations', title: 'Crafting Immersive Interfaces', description: 'Creative developer and UI designer specializing in interactive experiences, custom portfolio systems, and polished digital products.' });
+  const projectsCopy = getSectionCopy(data, 'projects', { label: 'Featured Project', title: 'Selected works in orbit', description: 'A focused deck for the strongest projects in your portfolio.' });
+  const experienceCopy = getSectionCopy(data, 'experience', { label: 'Experience', title: 'Experience Timeline', description: 'Roles, education, responsibilities, and results come from the form.' });
+  const skillsCopy = getSectionCopy(data, 'skills', { label: 'Selected Tools', title: 'Industry tools I master.', description: 'A compact view of your most important skills.' });
+  const videosCopy = getSectionCopy(data, 'videos', { label: 'Motion Proof', title: 'Videos and demos' });
+  const awardsCopy = getSectionCopy(data, 'awards', { label: 'Recognition', title: 'Honors and proof points' });
+  const contactCopy = getSectionCopy(data, 'contact', { label: 'Contact', title: 'Start a Collaboration', description: 'Have a project idea, role opportunity, or portfolio conversation? Use the public contact channels below.' });
+  const orbitSkillSignal = skills.length
+    ? `${skills.slice(0, 3).map((skill) => skill.name).join(', ')}${skills.length > 3 ? ` +${skills.length - 3} more` : ''}`
+    : 'Add skills in the form';
 
   function handleDeckMove(event: React.MouseEvent<HTMLDivElement>) {
     const rect = event.currentTarget.getBoundingClientRect();
@@ -138,8 +149,9 @@ export function TemplateAqua({ data }: { data: SiteData }) {
         .aqua-hero-center { text-align:center; display:flex; flex-direction:column; align-items:center; }
         .aqua-booking { display:inline-flex; align-items:center; gap:9px; margin-bottom:24px; padding:8px 13px; border-radius:999px; color:#9595b1; font-size:11px; font-weight:700; }
         .aqua-booking i { width:7px; height:7px; border-radius:999px; background:#8570ee; animation:aqua-pulse-dot 1.6s ease-in-out infinite; }
-        .aqua-hero h1 { max-width:780px; margin:0; font-size:clamp(42px, 6vw, 78px); line-height:1.05; letter-spacing:-.06em; font-weight:900; }
-        .aqua-hero h1 span:first-child { background:linear-gradient(90deg,#dcd7ff,#8570ee,#d946ef); -webkit-background-clip:text; background-clip:text; color:transparent; }
+        .aqua-identity { margin:0 0 14px; color:#10b981; font-size:clamp(13px, 1.45vw, 18px); font-weight:800; letter-spacing:.24em; text-transform:uppercase; }
+        .aqua-hero h1 { max-width:880px; margin:0; font-size:clamp(36px, 5vw, 68px); line-height:1.08; letter-spacing:-.045em; font-weight:900; }
+        .aqua-hero h1 span { background:linear-gradient(90deg,#dcd7ff,#8570ee,#d946ef); -webkit-background-clip:text; background-clip:text; color:transparent; }
         .aqua-hero p { max-width:620px; margin:22px auto 30px; color:#9595b1; font-size:14px; line-height:1.8; }
         .aqua-start { display:flex; flex-direction:column; align-items:center; gap:9px; color:#9595b1; font-size:10px; font-weight:900; letter-spacing:.18em; text-transform:uppercase; }
         .aqua-start button { position:relative; width:52px; height:52px; border-radius:50%; background:#fff; color:#05030a; font-size:22px; font-weight:900; box-shadow:0 18px 42px rgba(133,112,238,.24); }
@@ -166,7 +178,7 @@ export function TemplateAqua({ data }: { data: SiteData }) {
         .aqua-orbit-copy { min-width:0; }
         .aqua-orbit-copy:nth-child(3) { text-align:right; }
         .aqua-orbit-copy span { display:block; color:#8570ee; font-size:10px; font-weight:900; letter-spacing:.18em; text-transform:uppercase; }
-        .aqua-orbit-copy strong { display:block; margin-top:6px; color:#fff; font-size:15px; line-height:1.35; }
+        .aqua-orbit-copy strong { display:block; margin-top:6px; color:#fff; font-size:15px; line-height:1.35; overflow-wrap:anywhere; }
         .aqua-orbit { height:150px; display:grid; place-items:center; position:relative; overflow:visible; }
         .aqua-orbit-line { position:absolute; left:50%; top:50%; width:192px; height:62px; border-radius:999px; transform:translate(-50%,-50%); background:radial-gradient(ellipse at center, transparent 58%, rgba(133,112,238,.32) 59%, rgba(217,70,239,.18) 62%, transparent 64%); box-shadow:0 0 28px rgba(133,112,238,.12), inset 0 0 28px rgba(217,70,239,.08); opacity:.9; }
         .aqua-orbit-line::after { content:""; position:absolute; inset:9px 22px; border-radius:inherit; border:1px solid rgba(255,255,255,.05); filter:blur(.2px); }
@@ -179,7 +191,7 @@ export function TemplateAqua({ data }: { data: SiteData }) {
         .aqua-section { max-width:1120px; margin:0 auto 64px; }
         .aqua-section-label { display:block; margin-bottom:6px; color:#8570ee; font-size:11px; font-weight:900; letter-spacing:.2em; text-transform:uppercase; }
         .aqua-section h2 { margin:0 0 24px; font-size:clamp(26px, 3vw, 38px); font-weight:900; letter-spacing:-.04em; }
-        .aqua-bento { display:grid; grid-template-columns:5fr 7fr; gap:24px; }
+        .aqua-bento { display:grid; grid-template-columns:1fr; gap:24px; }
         .aqua-panel { border-radius:28px; padding:24px; }
         .aqua-panel-head { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:18px; font-size:14px; font-weight:900; }
         .aqua-status { border-radius:999px; padding:4px 10px; background:rgba(16,185,129,.1); color:#10b981; font-size:10px; }
@@ -286,13 +298,11 @@ export function TemplateAqua({ data }: { data: SiteData }) {
             </div>
 
             <div className="aqua-hero-center aqua-reveal" style={{ animationDelay: '0.2s' }}>
-              <div className="aqua-booking aqua-glass"><i /> Now booking new collaborations</div>
+              <p className="aqua-identity">{data.user.title || 'Creative Portfolio'}</p>
               <h1>
-                <span>{data.user.title || 'Crafting Immersive Interfaces'}</span>
-                <br />
-                <span>{data.user.bio || 'and Digital Products'}</span>
+                <span>{aboutCopy.title}</span>
               </h1>
-              <p>{data.user.fullBio || 'Creative developer and UI designer specializing in interactive experiences, custom portfolio systems, and polished digital products.'}</p>
+              <p>{aboutCopy.description || data.user.fullBio || 'Creative developer and UI designer specializing in interactive experiences, custom portfolio systems, and polished digital products.'}</p>
               <div className="aqua-start">
                 <span>Start a project</span>
                 <button type="button" onClick={() => setIsDrawerOpen(true)}>→</button>
@@ -313,13 +323,17 @@ export function TemplateAqua({ data }: { data: SiteData }) {
             </div>
             <div className="aqua-orbit"><div className="aqua-orbit-line" /><div className="aqua-orbit-runner"><div className="aqua-orbit-saucer" /></div><div className="aqua-planet">✦</div></div>
             <div className="aqua-orbit-copy">
-              <span>Motion Layer</span>
-              <strong>{featuredProject?.tools || 'Interactive visual identity'}</strong>
+              <span>Skill Signal</span>
+              <strong title={skills.map((skill) => skill.name).join(', ')}>{orbitSkillSignal}</strong>
             </div>
           </section>
 
           {projects.length ? (
-            <section className="aqua-deck aqua-reveal" id="projects" onMouseMove={handleDeckMove} onMouseLeave={resetDeck} style={{ animationDelay: '0.5s' }}>
+            <section className="aqua-section aqua-reveal" id="projects" style={{ animationDelay: '0.5s' }}>
+              <span className="aqua-section-label">{projectsCopy.label}</span>
+              <h2>{projectsCopy.title}</h2>
+              {projectsCopy.description ? <p className="mb-8 text-xs leading-6 text-[#9595b1]">{projectsCopy.description}</p> : null}
+              <div className="aqua-deck" onMouseMove={handleDeckMove} onMouseLeave={resetDeck}>
               <ProjectMiniCard project={leftProject} side="left" />
               {featuredProject ? (
                 <div ref={centerCardRef} className="aqua-glass aqua-project-card aqua-card-center">
@@ -342,12 +356,14 @@ export function TemplateAqua({ data }: { data: SiteData }) {
                 </div>
               ) : null}
               <ProjectMiniCard project={rightProject} side="right" />
+              </div>
             </section>
           ) : null}
 
           <section className="aqua-section aqua-reveal" id="skills" style={{ animationDelay: '0.6s' }}>
-            <span className="aqua-section-label">Cooperation Tool</span>
-            <h2>Interactive Planner & Skills</h2>
+            <span className="aqua-section-label">{experienceCopy.label}</span>
+            <h2>{experienceCopy.title}</h2>
+            {experienceCopy.description ? <p className="mb-6 text-xs leading-6 text-[#9595b1]">{experienceCopy.description}</p> : null}
             <div className="aqua-bento">
               <div className="aqua-glass aqua-panel">
                 <div className="aqua-panel-head"><span>Experience Timeline</span><span className="aqua-status">{data.config.showExperience ? 'From Form' : 'Hidden'}</span></div>
@@ -369,26 +385,16 @@ export function TemplateAqua({ data }: { data: SiteData }) {
                 )}
               </div>
 
-              <div className="aqua-glass aqua-panel">
-                <div className="aqua-panel-head"><span>Skill Matrix</span><span className="aqua-pink text-xs">Form Driven</span></div>
-                <p className="mb-6 text-xs leading-6 text-[#9595b1]">技能名称、分类和熟练度都来自表单填写，避免展示与个人作品集无关的虚拟指标。</p>
-                <div className="aqua-skill-grid">
-                  {(skills.length ? skills : []).slice(0, 6).map((skill) => (
-                    <div key={skill.id || skill.name}>
-                      <span>{skill.category || 'Skill'}</span>
-                      <strong>{skill.name} · {skill.proficiency}/5</strong>
-                      <div className="aqua-skill-meter"><b style={{ width: `${skill.proficiency * 20}%` }} /></div>
-                    </div>
-                  ))}
-                  {!skills.length ? <span>尚未填写技能，技能矩阵将自动隐藏无关示例。</span> : null}
-                </div>
-              </div>
             </div>
           </section>
 
           {data.config.showSkills && skills.length ? (
             <section className="aqua-section aqua-reveal" style={{ animationDelay: '0.7s' }}>
-              <div className="mb-8 text-center"><span className="text-xs uppercase tracking-[.22em] text-[#9595b1]">Selected Industry Tools I Master</span></div>
+              <div className="mb-8 text-center">
+                <span className="text-xs uppercase tracking-[.22em] text-[#9595b1]">{skillsCopy.label}</span>
+                {skillsCopy.title ? <h2 className="mt-3 text-3xl font-black">{skillsCopy.title}</h2> : null}
+                {skillsCopy.description ? <p className="mx-auto mt-3 max-w-xl text-xs leading-6 text-[#9595b1]">{skillsCopy.description}</p> : null}
+              </div>
               <div className="aqua-tools">
                 {skills.slice(0, 8).map((skill, index) => (
                   <article className="aqua-glass aqua-tool" key={skill.id || skill.name}>
@@ -408,8 +414,9 @@ export function TemplateAqua({ data }: { data: SiteData }) {
 
           {data.config.showVideos && videos.length ? (
             <section className="aqua-section aqua-reveal">
-              <span className="aqua-section-label">Motion Proof</span>
-              <h2>Videos and demos</h2>
+              <span className="aqua-section-label">{videosCopy.label}</span>
+              <h2>{videosCopy.title}</h2>
+              {videosCopy.description ? <p className="mb-6 text-xs leading-6 text-[#9595b1]">{videosCopy.description}</p> : null}
               <div className="aqua-media-grid">
                 {videos.slice(0, 3).map((video) => (
                   <a className={`aqua-glass aqua-media-card ${video.isFeatured ? 'featured' : ''}`} href={video.videoUrl} target="_blank" rel="noreferrer" key={video.id || video.videoUrl}>
@@ -425,8 +432,9 @@ export function TemplateAqua({ data }: { data: SiteData }) {
 
           {data.config.showAwards && awards.length ? (
             <section className="aqua-section aqua-reveal">
-              <span className="aqua-section-label">Recognition</span>
-              <h2>Honors and proof points</h2>
+              <span className="aqua-section-label">{awardsCopy.label}</span>
+              <h2>{awardsCopy.title}</h2>
+              {awardsCopy.description ? <p className="mb-6 text-xs leading-6 text-[#9595b1]">{awardsCopy.description}</p> : null}
               <div className="aqua-award-grid">{awards.slice(0, 3).map((award) => <article className="aqua-glass aqua-award-card" key={award.id || award.title}><div className="aqua-pill">{award.date || award.issuer}</div><h3>{award.title}</h3><p>{award.description || award.issuer}</p></article>)}</div>
             </section>
           ) : null}
@@ -467,8 +475,8 @@ export function TemplateAqua({ data }: { data: SiteData }) {
       <button className="aqua-glass aqua-float" type="button" onClick={() => setIsDrawerOpen(true)}>✉</button>
       <aside className={`aqua-drawer ${isDrawerOpen ? 'open' : ''}`}>
         <div>
-          <div className="aqua-drawer-head"><strong>Start a Collaboration</strong><button type="button" onClick={() => setIsDrawerOpen(false)}>×</button></div>
-          <p className="mb-4 text-xs leading-6 text-[#9595b1]">Have a project idea, role opportunity, or portfolio conversation? Use the public contact channels below.</p>
+          <div className="aqua-drawer-head"><strong>{contactCopy.title}</strong><button type="button" onClick={() => setIsDrawerOpen(false)}>×</button></div>
+          {contactCopy.description ? <p className="mb-4 text-xs leading-6 text-[#9595b1]">{contactCopy.description}</p> : null}
           <div className="aqua-box"><label className="aqua-muted mb-1 block text-[10px]">Contact Email</label>{data.user.email ? <a className="text-sm font-bold text-white" href={`mailto:${data.user.email}`}>{data.user.email}</a> : <span className="text-sm text-[#9595b1]">Email hidden for this published version.</span>}</div>
           {data.user.location ? <div className="aqua-box"><label className="aqua-muted mb-1 block text-[10px]">Location</label><span className="text-sm text-white">{data.user.location}</span></div> : null}
           {socials.length ? <div className="aqua-box"><label className="aqua-muted mb-2 block text-[10px]">Social Links</label><div className="flex flex-wrap gap-2">{socials.map((social) => <a className="aqua-pill" href={social.url} target="_blank" rel="noreferrer" key={social.id || social.url}>{social.platform}</a>)}</div></div> : null}

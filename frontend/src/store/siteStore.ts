@@ -3,6 +3,7 @@ import { defaultSiteData, type Award, type BlogPost, type Experience, type Proje
 
 const STORAGE_KEY = 'siteforge:data:v1';
 const TEMPLATE_STORAGE_KEY = 'siteforge:template:v1';
+const LEGACY_DEFAULT_ABOUT_TITLE = 'A focused space for your work, story, and capabilities.';
 
 interface SiteStore {
   data: SiteData;
@@ -28,11 +29,20 @@ interface SiteStore {
 }
 
 function normalizeSiteData(data: Partial<SiteData>): SiteData {
+  const sectionCopies = { ...defaultSiteData.config.sectionCopies, ...data.config?.sectionCopies };
+  if (sectionCopies.about?.title === LEGACY_DEFAULT_ABOUT_TITLE && !sectionCopies.about.description) {
+    sectionCopies.about = {
+      ...sectionCopies.about,
+      title: '',
+      description: ''
+    };
+  }
+
   return {
     ...defaultSiteData,
     ...data,
     user: { ...defaultSiteData.user, ...data.user },
-    config: { ...defaultSiteData.config, ...data.config },
+    config: { ...defaultSiteData.config, ...data.config, sectionCopies },
     projects: data.projects ?? defaultSiteData.projects,
     experiences: data.experiences ?? defaultSiteData.experiences,
     skills: data.skills ?? defaultSiteData.skills,

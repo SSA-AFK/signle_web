@@ -5,6 +5,15 @@ export type ProjectStatus = 'draft' | 'published' | 'archived';
 export type PostStatus = 'draft' | 'published';
 export type VideoPlatform = 'youtube' | 'vimeo' | 'bilibili' | 'custom';
 export type TemplateId = 'snowly' | 'elena' | 'aura' | 'solace' | 'jakarta' | 'aqua';
+export type SectionKey = 'about' | 'projects' | 'experience' | 'skills' | 'skillTools' | 'videos' | 'awards' | 'contact';
+
+export interface SectionCopy {
+  label?: string;
+  title?: string;
+  description?: string;
+}
+
+export type SectionCopies = Partial<Record<SectionKey, SectionCopy>>;
 
 export interface User {
   id?: number;
@@ -134,6 +143,7 @@ export interface SiteConfig {
   showSkills: boolean;
   showVideos: boolean;
   showAwards: boolean;
+  sectionCopies?: SectionCopies;
   customCss?: string;
   seoTitle?: string;
   seoDescription?: string;
@@ -175,6 +185,24 @@ export type AIAction =
   | { action: 'deleteVideo'; id: number }
   | { action: 'updateConfig'; fields: Partial<SiteConfig> };
 
+export function getSectionCopy(data: SiteData, key: SectionKey, fallback: SectionCopy): Required<SectionCopy> {
+  const copy = data.config.sectionCopies?.[key];
+  return {
+    label: copy?.label?.trim() || fallback.label?.trim() || '',
+    title: copy?.title?.trim() || fallback.title?.trim() || '',
+    description: copy?.description?.trim() || fallback.description?.trim() || ''
+  };
+}
+
+export function getAboutSectionCopy(data: SiteData, fallback: SectionCopy): Required<SectionCopy> {
+  const copy = data.config.sectionCopies?.about;
+  return {
+    label: copy?.label?.trim() || fallback.label?.trim() || '',
+    title: data.user.bio?.trim() || fallback.title?.trim() || '',
+    description: data.user.fullBio?.trim() || fallback.description?.trim() || ''
+  };
+}
+
 export interface AIChatRequest {
   message: string;
   currentData: SiteData;
@@ -210,6 +238,48 @@ export const defaultConfig: SiteConfig = {
   showSkills: true,
   showVideos: true,
   showAwards: true,
+  sectionCopies: {
+    about: {
+      label: 'About',
+      title: '',
+      description: ''
+    },
+    projects: {
+      label: 'Selected Work',
+      title: 'Recent projects with practical depth.',
+      description: 'Project images, galleries, roles, tools, and outcomes are driven by the form.'
+    },
+    experience: {
+      label: 'Experience',
+      title: 'Experience built around real outcomes.',
+      description: 'Use the timeline to show roles, education, responsibilities, and results.'
+    },
+    skills: {
+      label: 'Skills',
+      title: 'Tools and strengths.',
+      description: 'Show the tools, methods, and capabilities you use most often.'
+    },
+    skillTools: {
+      label: 'Selected Tools',
+      title: 'Industry tools I master.',
+      description: 'A compact view of your most important skills.'
+    },
+    videos: {
+      label: 'Video',
+      title: 'Stories, demos, and walkthroughs.',
+      description: 'Feature videos only when you add them in the form.'
+    },
+    awards: {
+      label: 'Awards',
+      title: 'Honors and professional recognition.',
+      description: 'Add awards, certificates, or public recognition that support your portfolio.'
+    },
+    contact: {
+      label: 'Contact',
+      title: 'Ready to start a new conversation?',
+      description: 'Portfolio reviews, project collaboration, role opportunities, and creative conversations can all start here.'
+    }
+  },
   seoTitle: '',
   seoDescription: ''
 };

@@ -1,6 +1,7 @@
 import { ArrowRight, Mail, MapPin, Play, Star } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
+import { getSectionCopy } from '@siteforge/shared';
 import type { Project, SiteData, VideoItem } from '@siteforge/shared';
 
 const fallbackHero = 'https://images.unsplash.com/photo-1502224562085-639556652f33?auto=format&fit=crop&w=1600&q=80';
@@ -76,6 +77,13 @@ export function TemplateSolace({ data }: { data: SiteData }) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [previewImage, setPreviewImage] = useState<{ src: string; alt: string } | null>(null);
   const activeProject = sliderProjects[activeSlide] ?? projects[0];
+  const projectsCopy = getSectionCopy(data, 'projects', { label: '[ Selected Work ]', title: 'Confidence starts with a focused story', description: 'Add projects in the form to drive this slider.' });
+  const archiveCopy = getSectionCopy(data, 'projects', { label: '[ Project Archive ]', title: 'All work at a glance', description: 'A compact index for scanning every project without repeating the featured visual showcase above.' });
+  const experienceCopy = getSectionCopy(data, 'experience', { label: '[ The Process ]', title: 'Experience built around real outcomes' });
+  const videosCopy = getSectionCopy(data, 'videos', { label: '[ Motion Proof ]', title: 'Video showcase' });
+  const skillsCopy = getSectionCopy(data, 'skills', { label: '[ Skill Stack ]', title: '' });
+  const awardsCopy = getSectionCopy(data, 'awards', { label: '[ Honors ]', title: '' });
+  const contactCopy = getSectionCopy(data, 'contact', { label: 'Contact', title: 'Invest in the most important story you have.', description: 'Available for selected collaborations, portfolio reviews, product design work, and digital experience projects.' });
 
   useEffect(() => {
     if (sliderProjects.length <= 1) return undefined;
@@ -228,12 +236,12 @@ export function TemplateSolace({ data }: { data: SiteData }) {
           <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 lg:grid-cols-12">
             <div className="solace-reveal flex min-h-[420px] flex-col justify-between lg:col-span-5">
               <div>
-                <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#637d77]">[ Selected Work ]</span>
-                <h2 className="mt-6 text-4xl font-light leading-tight tracking-tight md:text-5xl">Confidence starts<br /><span className="font-normal text-[#a3e3cc]">with a focused story</span></h2>
+                <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#637d77]">{projectsCopy.label}</span>
+                <h2 className="mt-6 text-4xl font-light leading-tight tracking-tight md:text-5xl">{projectsCopy.title}</h2>
                 <button type="button" onClick={() => activeProject && setSelectedProject(activeProject)} className="solace-interactive mt-8 inline-flex rounded-full bg-[#00f294] px-5 py-2.5 text-xs font-bold text-[#021b13] transition hover:brightness-110">View Project</button>
               </div>
               <div className="mt-12 space-y-8">
-                <p className="min-h-[72px] max-w-sm text-xs leading-7 text-[#637d77]">{activeProject?.description || activeProject?.content || 'Add projects in the form to drive this slider.'}</p>
+                <p className="min-h-[72px] max-w-sm text-xs leading-7 text-[#637d77]">{activeProject?.description || activeProject?.content || projectsCopy.description}</p>
                 <div className="flex max-w-xs items-center gap-2">
                   {sliderProjects.map((project, index) => (
                     <button key={project.id || project.slug || index} type="button" className="solace-interactive h-[3px] flex-1 overflow-hidden rounded-full bg-white/20" onClick={() => setActiveSlide(index)} aria-label={`Show ${project.title}`}>
@@ -262,8 +270,9 @@ export function TemplateSolace({ data }: { data: SiteData }) {
         <section className="bg-[#f8faf9] py-24 text-[#021b13]">
           <div className="mx-auto max-w-7xl px-6">
             <div className="solace-reveal mb-14 text-center">
-              <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#637d77]">[ The Process ]</span>
-              <h2 className="mt-4 text-4xl font-light tracking-tight md:text-5xl">Experience built<br /><span className="text-slate-400">around real outcomes</span></h2>
+              <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#637d77]">{experienceCopy.label}</span>
+              <h2 className="mt-4 text-4xl font-light tracking-tight md:text-5xl">{experienceCopy.title}</h2>
+              {experienceCopy.description ? <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[#637d77]">{experienceCopy.description}</p> : null}
             </div>
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
               {experiences.slice(0, 3).map((experience, index) => (
@@ -284,10 +293,10 @@ export function TemplateSolace({ data }: { data: SiteData }) {
           <div className="mx-auto max-w-7xl px-6">
             <div className="solace-reveal mb-12 flex flex-col justify-between gap-5 md:flex-row md:items-end">
               <div>
-                <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#637d77]">[ Project Archive ]</span>
-                <h2 className="mt-4 text-4xl font-light tracking-tight md:text-5xl">All work at a glance</h2>
+                <span className="text-xs font-bold uppercase tracking-[0.28em] text-[#637d77]">{archiveCopy.label}</span>
+                <h2 className="mt-4 text-4xl font-light tracking-tight md:text-5xl">{archiveCopy.title}</h2>
               </div>
-              <p className="max-w-sm text-sm leading-7 text-[#637d77]">A compact index for scanning every project without repeating the featured visual showcase above.</p>
+              {archiveCopy.description ? <p className="max-w-sm text-sm leading-7 text-[#637d77]">{archiveCopy.description}</p> : null}
             </div>
             <div className="grid grid-cols-1 gap-4">
               {projects.map((project, index) => (
@@ -315,7 +324,7 @@ export function TemplateSolace({ data }: { data: SiteData }) {
       {data.config.showVideos && videos.length ? (
         <section className="bg-[#01110d] py-24">
           <div className="mx-auto max-w-7xl px-6">
-            <div className="solace-reveal mb-12"><p className="text-xs font-bold uppercase tracking-[0.28em] text-[#00f294]">[ Motion Proof ]</p><h2 className="mt-4 text-4xl font-light">Video showcase</h2></div>
+            <div className="solace-reveal mb-12"><p className="text-xs font-bold uppercase tracking-[0.28em] text-[#00f294]">{videosCopy.label}</p><h2 className="mt-4 text-4xl font-light">{videosCopy.title}</h2>{videosCopy.description ? <p className="mt-4 max-w-xl text-sm leading-7 text-[#637d77]">{videosCopy.description}</p> : null}</div>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">{videos.map((video) => <VideoCard key={video.id || video.videoUrl} video={video} />)}</div>
           </div>
         </section>
@@ -326,7 +335,9 @@ export function TemplateSolace({ data }: { data: SiteData }) {
           <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 lg:grid-cols-2">
             {data.config.showSkills && skills.length ? (
               <div className="solace-reveal rounded-[2rem] border border-emerald-100 bg-white p-8 shadow-sm">
-                <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#637d77]">[ Skill Stack ]</p>
+                <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#637d77]">{skillsCopy.label}</p>
+                {skillsCopy.title ? <h2 className="mt-4 text-3xl font-light">{skillsCopy.title}</h2> : null}
+                {skillsCopy.description ? <p className="mt-3 text-sm leading-7 text-[#637d77]">{skillsCopy.description}</p> : null}
                 <div className="mt-8 space-y-5">
                   {skills.map((skill) => <div key={skill.id || skill.name}><div className="mb-2 flex justify-between text-sm font-semibold"><span>{skill.name}</span><span>{skill.proficiency}/5</span></div><div className="h-2 overflow-hidden rounded-full bg-emerald-100"><span className="block h-full rounded-full bg-[#00f294]" style={{ width: `${skill.proficiency * 20}%` }} /></div></div>)}
                 </div>
@@ -334,7 +345,9 @@ export function TemplateSolace({ data }: { data: SiteData }) {
             ) : null}
             {data.config.showAwards && awards.length ? (
               <div className="solace-reveal rounded-[2rem] bg-[#021b13] p-8 text-white shadow-xl shadow-emerald-950/20">
-                <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#00f294]">[ Honors ]</p>
+                <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#00f294]">{awardsCopy.label}</p>
+                {awardsCopy.title ? <h2 className="mt-4 text-3xl font-light">{awardsCopy.title}</h2> : null}
+                {awardsCopy.description ? <p className="mt-3 text-sm leading-7 text-[#a3e3cc]/70">{awardsCopy.description}</p> : null}
                 <div className="mt-8 space-y-5">
                   {awards.map((award) => <article key={award.id || award.title} className="border-t border-white/10 pt-5"><div className="flex items-center gap-3 text-[#00f294]"><Star className="h-4 w-4" /><span className="text-xs font-bold">{award.date || award.issuer}</span></div><h3 className="mt-3 text-lg font-semibold">{award.title}</h3>{award.description ? <p className="mt-2 text-xs leading-6 text-[#a3e3cc]/70">{award.description}</p> : null}</article>)}
                 </div>
@@ -348,8 +361,9 @@ export function TemplateSolace({ data }: { data: SiteData }) {
         <div className="solace-glow bottom-[-220px] left-[20%]" />
         <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-6 lg:grid-cols-12">
           <div className="solace-reveal space-y-8 lg:col-span-8">
-            <h2 className="text-4xl font-light leading-tight tracking-tight md:text-6xl">Invest in the most<br />important <span className="font-normal text-[#00f294]">story you have.</span></h2>
-            <p className="max-w-md text-xs leading-7 text-[#637d77]">Available for selected collaborations, portfolio reviews, product design work, and digital experience projects.</p>
+            <p className="text-xs font-bold uppercase tracking-[0.28em] text-[#00f294]">{contactCopy.label}</p>
+            <h2 className="text-4xl font-light leading-tight tracking-tight md:text-6xl">{contactCopy.title}</h2>
+            {contactCopy.description ? <p className="max-w-md text-xs leading-7 text-[#637d77]">{contactCopy.description}</p> : null}
           </div>
           <div className="solace-reveal flex flex-col items-start gap-4 lg:col-span-4 lg:items-end">
             {data.user.email ? <a href={`mailto:${data.user.email}`} className="solace-interactive inline-flex items-center gap-3 rounded-full bg-[#00f294] px-8 py-4 text-xs font-bold uppercase tracking-[0.2em] text-[#021b13]"><Mail className="h-4 w-4" /> Contact Me</a> : null}

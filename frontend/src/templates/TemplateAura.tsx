@@ -1,6 +1,7 @@
 import { Mail, MapPin, Play, Star } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
+import { getSectionCopy } from '@siteforge/shared';
 import type { Award, Project, SiteData, VideoItem } from '@siteforge/shared';
 
 const cyan = '#49c5b6';
@@ -174,8 +175,6 @@ function SkillProtocolCard({ skill, index }: { skill: SiteData['skills'][number]
 export function TemplateAura({ data }: { data: SiteData }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rootRef = useRef<HTMLDivElement | null>(null);
-  const cursorRef = useRef<HTMLDivElement | null>(null);
-  const cursorDotRef = useRef<HTMLDivElement | null>(null);
   const mouseRef = useRef({ x: 0.5, y: 0.5 });
   const hoverRef = useRef({ x: 0, y: 0 });
   const [selectedVideo, setSelectedVideo] = useState<VideoItem | null>(null);
@@ -185,6 +184,12 @@ export function TemplateAura({ data }: { data: SiteData }) {
   const awards = sortByOrder(data.awards ?? []).filter((award) => award.title.trim());
   const videos = sortByOrder(data.videos ?? []).filter((video) => video.videoUrl.trim());
   const socials = sortByOrder(data.socialLinks);
+  const projectsCopy = getSectionCopy(data, 'projects', { label: '// SELECTED TELEMETRY', title: 'CORE DATA MATRIX' });
+  const videosCopy = getSectionCopy(data, 'videos', { label: '// REELS & DEMOS', title: 'MULTIMEDIA TERMINAL' });
+  const awardsCopy = getSectionCopy(data, 'awards', { label: '// RECOGNITION LOG', title: 'HONOR DATA VAULT' });
+  const experienceCopy = getSectionCopy(data, 'experience', { label: '// EXPERIENCE CHRONOLOGY', title: 'BIOGRAPHY DATABASE' });
+  const skillsCopy = getSectionCopy(data, 'skills', { label: '// CAPABILITY STACK', title: 'SKILL PROTOCOLS' });
+  const contactCopy = getSectionCopy(data, 'contact', { label: '// CONTACT', title: 'CONNECT TO PORT', description: 'Establish a secure channel for collaboration, roles, or experimental digital systems.' });
 
   useEffect(() => {
     const root = rootRef.current;
@@ -200,27 +205,10 @@ export function TemplateAura({ data }: { data: SiteData }) {
 
   useEffect(() => {
     const root = rootRef.current;
-    const cursor = cursorRef.current;
-    const dot = cursorDotRef.current;
-    if (!root || !cursor || !dot) return undefined;
-    const cursorElement = cursor;
-    const dotElement = dot;
-    let raf = 0;
-    let cx = window.innerWidth / 2;
-    let cy = window.innerHeight / 2;
-    let dx = cx;
-    let dy = cy;
-
-    function onMove(event: MouseEvent) {
-      dx = event.clientX;
-      dy = event.clientY;
-      dotElement.style.transform = `translate3d(${dx}px, ${dy}px, 0) translate(-50%, -50%)`;
-    }
+    if (!root) return undefined;
 
     function onOver(event: MouseEvent) {
       const target = event.target as HTMLElement | null;
-      const interactive = target?.closest('.aura-interactive');
-      cursorElement.classList.toggle('aura-cursor-active', Boolean(interactive));
       const card = target?.closest('[data-aura-card-index]');
       if (card instanceof HTMLElement) {
         const index = Number(card.dataset.auraCardIndex || 0);
@@ -230,24 +218,12 @@ export function TemplateAura({ data }: { data: SiteData }) {
 
     function onOut(event: MouseEvent) {
       const target = event.target as HTMLElement | null;
-      if (target?.closest('.aura-interactive')) cursorElement.classList.remove('aura-cursor-active');
       if (target?.closest('[data-aura-card-index]')) hoverRef.current = { x: 0, y: 0 };
     }
 
-    function animate() {
-      cx += (dx - cx) * 0.18;
-      cy += (dy - cy) * 0.18;
-      cursorElement.style.transform = `translate3d(${cx}px, ${cy}px, 0) translate(-50%, -50%)`;
-      raf = requestAnimationFrame(animate);
-    }
-
-    root.addEventListener('mousemove', onMove);
     root.addEventListener('mouseover', onOver);
     root.addEventListener('mouseout', onOut);
-    animate();
     return () => {
-      cancelAnimationFrame(raf);
-      root.removeEventListener('mousemove', onMove);
       root.removeEventListener('mouseover', onOver);
       root.removeEventListener('mouseout', onOut);
     };
@@ -394,9 +370,6 @@ export function TemplateAura({ data }: { data: SiteData }) {
         .aura-screen-corner.br { bottom: 16px; right: 16px; border-bottom: 2px solid; border-right: 2px solid; }
         .aura-reveal { opacity: 0; transform: translate3d(0, 48px, 0); transition: opacity 1.1s cubic-bezier(.16,1,.3,1), transform 1.1s cubic-bezier(.16,1,.3,1); }
         .aura-visible { opacity: 1; transform: translate3d(0, 0, 0); }
-        .aura-cursor { transform: translate3d(var(--mouse-x), var(--mouse-y), 0) translate(-50%, -50%); transition: width .28s ease, height .28s ease, border-color .28s ease, background-color .28s ease; }
-        .aura-cursor-dot { transform: translate3d(var(--mouse-x), var(--mouse-y), 0) translate(-50%, -50%); }
-        .aura-cursor-active { width: 55px; height: 55px; border-color: #ff9398; background: rgba(255,147,152,.06); }
         .aura-noise { background-image: radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px); background-size: 3px 3px; mix-blend-mode: screen; opacity: .05; }
         .aura-panel { clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--aura-panel-accent, #49c5b6) 12%, transparent), inset 0 0 36px rgba(73,197,182,.045), 0 20px 80px rgba(0,0,0,.28); }
         .aura-panel::before { content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(circle at 20% 0%, color-mix(in srgb, var(--aura-panel-accent, #49c5b6) 18%, transparent), transparent 34%), linear-gradient(120deg, transparent 0%, color-mix(in srgb, var(--aura-panel-accent, #49c5b6) 16%, transparent) 44%, transparent 62%); transform: translateX(-125%); opacity: .9; transition: transform .95s cubic-bezier(.16,1,.3,1); }
@@ -410,7 +383,6 @@ export function TemplateAura({ data }: { data: SiteData }) {
         .aura-skill-card:hover::before { transform: translateX(120%); }
         .aura-skill-orb { width: 58px; height: 58px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 999px; color: white; font-size: 15px; font-weight: 800; background: conic-gradient(var(--skill-accent) var(--skill-percent), rgba(255,255,255,.08) 0), radial-gradient(circle, #04030a 58%, transparent 60%); box-shadow: 0 0 24px color-mix(in srgb, var(--skill-accent) 38%, transparent); }
         .aura-skill-orb span { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,.08); border-radius: 999px; background: rgba(4,3,10,.92); }
-        @media (hover: hover) and (pointer: fine) { .aura-root { cursor: none; } .aura-root a, .aura-root button { cursor: none; } }
       `}</style>
       <canvas ref={canvasRef} className="aura-stage z-0 h-full w-full" />
       <div className="aura-fixed-layer aura-grid z-[1]" />
@@ -422,9 +394,7 @@ export function TemplateAura({ data }: { data: SiteData }) {
       <div className="aura-screen-corner tr" />
       <div className="aura-screen-corner bl" />
       <div className="aura-screen-corner br" />
-      <div ref={cursorRef} className="aura-cursor pointer-events-none fixed left-0 top-0 z-[60] hidden h-5 w-5 rounded-full border border-[#49c5b6]/50 md:block" />
-      <div ref={cursorDotRef} className="aura-cursor-dot pointer-events-none fixed left-0 top-0 z-[61] hidden h-1.5 w-1.5 rounded-full bg-[#49c5b6] md:block" />
-      <nav className="fixed left-0 top-0 z-40 flex w-full items-center justify-between border-b border-white/5 px-6 py-5 backdrop-blur-md md:px-10">
+      <nav className="sticky top-0 z-40 -mx-6 flex items-center justify-between border-b border-white/5 bg-[#030208]/45 px-6 py-5 backdrop-blur-md md:px-10">
         <a href="#home" className="aura-interactive text-sm font-bold tracking-[0.22em] text-white"><ScrambleText>{(data.user.username || data.user.displayName || 'AURA').toUpperCase()}</ScrambleText></a>
         <div className="hidden space-x-10 text-xs tracking-[0.2em] md:flex">
           <a href="#home" className="aura-interactive transition hover:text-[#49c5b6]">INDEX</a>
@@ -453,7 +423,7 @@ export function TemplateAura({ data }: { data: SiteData }) {
         </section>
 
         <section id="projects" className="border-t border-white/5 py-28">
-          <div className="aura-reveal mb-16"><p className="mb-2 text-xs tracking-[0.22em] text-[#49c5b6]">// SELECTED TELEMETRY</p><h2 className="text-4xl font-bold text-white"><ScrambleText>CORE DATA MATRIX</ScrambleText></h2></div>
+          <div className="aura-reveal mb-16"><p className="mb-2 text-xs tracking-[0.22em] text-[#49c5b6]">{projectsCopy.label}</p><h2 className="text-4xl font-bold text-white"><ScrambleText>{projectsCopy.title}</ScrambleText></h2>{projectsCopy.description ? <p className="mt-4 max-w-xl text-xs leading-7 text-slate-500">{projectsCopy.description}</p> : null}</div>
           <div className={`grid grid-cols-1 gap-8 ${data.config.layout === 'list' ? '' : 'md:grid-cols-3'}`}>
             {projects.map((project, index) => <ProjectNode key={project.id || project.slug} project={project} index={index} />)}
           </div>
@@ -461,21 +431,21 @@ export function TemplateAura({ data }: { data: SiteData }) {
 
         {data.config.showVideos && videos.length ? (
           <section id="video-section" className="border-t border-white/5 py-28">
-            <div className="aura-reveal mb-14"><p className="mb-2 text-xs tracking-[0.22em] text-[#49c5b6]">// REELS & DEMOS</p><h2 className="text-4xl font-bold text-white"><ScrambleText>MULTIMEDIA TERMINAL</ScrambleText></h2></div>
+            <div className="aura-reveal mb-14"><p className="mb-2 text-xs tracking-[0.22em] text-[#49c5b6]">{videosCopy.label}</p><h2 className="text-4xl font-bold text-white"><ScrambleText>{videosCopy.title}</ScrambleText></h2>{videosCopy.description ? <p className="mt-4 max-w-xl text-xs leading-7 text-slate-500">{videosCopy.description}</p> : null}</div>
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">{videos.map((video) => <VideoTerminal key={video.id || video.videoUrl} video={video} onOpen={setSelectedVideo} />)}</div>
           </section>
         ) : null}
 
         {data.config.showAwards && awards.length ? (
           <section id="awards" className="border-t border-white/5 py-28">
-            <div className="aura-reveal mb-14"><p className="mb-2 text-xs tracking-[0.22em] text-[#49c5b6]">// RECOGNITION LOG</p><h2 className="text-4xl font-bold text-white"><ScrambleText>HONOR DATA VAULT</ScrambleText></h2></div>
+            <div className="aura-reveal mb-14"><p className="mb-2 text-xs tracking-[0.22em] text-[#49c5b6]">{awardsCopy.label}</p><h2 className="text-4xl font-bold text-white"><ScrambleText>{awardsCopy.title}</ScrambleText></h2>{awardsCopy.description ? <p className="mt-4 max-w-xl text-xs leading-7 text-slate-500">{awardsCopy.description}</p> : null}</div>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">{awards.map((award, index) => <AwardTerminal key={award.id || award.title} award={award} index={index} />)}</div>
           </section>
         ) : null}
 
         {data.config.showExperience && experiences.length ? (
           <section id="resume" className="border-t border-white/5 py-28">
-            <div className="aura-reveal mb-16"><p className="mb-2 text-xs tracking-[0.22em] text-[#49c5b6]">// EXPERIENCE CHRONOLOGY</p><h2 className="text-4xl font-bold text-white"><ScrambleText>BIOGRAPHY DATABASE</ScrambleText></h2></div>
+            <div className="aura-reveal mb-16"><p className="mb-2 text-xs tracking-[0.22em] text-[#49c5b6]">{experienceCopy.label}</p><h2 className="text-4xl font-bold text-white"><ScrambleText>{experienceCopy.title}</ScrambleText></h2>{experienceCopy.description ? <p className="mt-4 max-w-xl text-xs leading-7 text-slate-500">{experienceCopy.description}</p> : null}</div>
             <div className="relative space-y-14 border-l border-white/10 pl-8 md:pl-12">
               {experiences.map((experience, index) => (
                 <article key={experience.id || experience.company} className="aura-reveal relative">
@@ -494,7 +464,7 @@ export function TemplateAura({ data }: { data: SiteData }) {
 
         {data.config.showSkills && skills.length ? (
           <section id="skills" className="border-t border-white/5 py-28">
-            <div className="aura-reveal mb-14"><p className="mb-2 text-xs tracking-[0.22em] text-[#49c5b6]">// CAPABILITY STACK</p><h2 className="text-4xl font-bold text-white"><ScrambleText>SKILL PROTOCOLS</ScrambleText></h2></div>
+            <div className="aura-reveal mb-14"><p className="mb-2 text-xs tracking-[0.22em] text-[#49c5b6]">{skillsCopy.label}</p><h2 className="text-4xl font-bold text-white"><ScrambleText>{skillsCopy.title}</ScrambleText></h2>{skillsCopy.description ? <p className="mt-4 max-w-xl text-xs leading-7 text-slate-500">{skillsCopy.description}</p> : null}</div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {skills.map((skill, index) => <SkillProtocolCard key={skill.id || skill.name} skill={skill} index={index} />)}
             </div>
@@ -502,8 +472,9 @@ export function TemplateAura({ data }: { data: SiteData }) {
         ) : null}
 
         <section id="contact" className="border-t border-white/5 py-28 text-center">
-          <h2 className="mb-6 text-3xl font-bold text-white md:text-6xl"><ScrambleText>CONNECT TO PORT</ScrambleText></h2>
-          <p className="mx-auto mb-10 max-w-sm text-xs leading-7 text-slate-500">Establish a secure channel for collaboration, roles, or experimental digital systems.</p>
+          <p className="mb-3 text-xs tracking-[0.22em] text-[#49c5b6]">{contactCopy.label}</p>
+          <h2 className="mb-6 text-3xl font-bold text-white md:text-6xl"><ScrambleText>{contactCopy.title}</ScrambleText></h2>
+          {contactCopy.description ? <p className="mx-auto mb-10 max-w-sm text-xs leading-7 text-slate-500">{contactCopy.description}</p> : null}
           <div className="flex flex-wrap justify-center gap-3">
             {data.user.email ? <a href={`mailto:${data.user.email}`} className="aura-interactive inline-flex items-center gap-2 border border-[#49c5b6] px-6 py-4 text-xs tracking-[0.18em] text-[#49c5b6] transition hover:bg-[#49c5b6] hover:text-black"><Mail className="h-4 w-4" /> EMAIL</a> : null}
             {data.user.location ? <span className="inline-flex items-center gap-2 border border-white/10 px-6 py-4 text-xs text-slate-500"><MapPin className="h-4 w-4" /> {data.user.location}</span> : null}

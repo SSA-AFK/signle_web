@@ -1,6 +1,7 @@
 import { ArrowRight, Github, Linkedin, Mail, MapPin, Sparkles } from 'lucide-react';
 import type { CSSProperties, MouseEvent } from 'react';
 import { useEffect, useRef, useState } from 'react';
+import { getSectionCopy } from '@siteforge/shared';
 import type { Award, Project, SiteData, SocialLink, VideoItem } from '@siteforge/shared';
 
 const accent = '#00E699';
@@ -186,6 +187,12 @@ export function TemplateElena({ data }: { data: SiteData }) {
   const videos = [...(data.videos ?? [])].filter((video) => video.videoUrl.trim()).sort((a, b) => a.displayOrder - b.displayOrder);
   const identityLabel = user.title || '设计师 / 开发者';
   const heroMainTitle = user.bio || '用创意和技术构建美好数字体验';
+  const projectsCopy = getSectionCopy(data, 'projects', { label: '[ SELECTED PORTFOLIO ]', title: 'Recent visual codes crafted with technical depth' });
+  const videosCopy = getSectionCopy(data, 'videos', { label: '[ MOTION PROOF ]', title: 'Project stories shown through video' });
+  const awardsCopy = getSectionCopy(data, 'awards', { label: '[ RECOGNITION ]', title: 'Honors and signals earned through the work' });
+  const experienceCopy = getSectionCopy(data, 'experience', { label: '[ THE PROCESS ]', title: 'Experience built around strategic goals' });
+  const skillsCopy = getSectionCopy(data, 'skills', { label: '[ SKILL STACK ]', title: 'Capabilities shaped by hands-on project work' });
+  const contactCopy = getSectionCopy(data, 'contact', { label: '[ CONTACT ]', title: 'Invest in the most important asset you have.', description: 'If the work resonates, reach out for project collaboration, role opportunities, or a creative conversation.' });
 
   useEffect(() => {
     const elements = Array.from(document.querySelectorAll<HTMLElement>('.elena-reveal'));
@@ -298,8 +305,9 @@ export function TemplateElena({ data }: { data: SiteData }) {
       <section id="works" className="relative z-10 mx-auto max-w-7xl space-y-12 py-20">
         <div className="elena-reveal flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div className="space-y-4">
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00E699]">[ SELECTED PORTFOLIO ]</span>
-            <h2 className="font-display text-3xl font-extrabold leading-tight md:text-5xl">Recent visual codes<br /><span className="font-light text-[#899E97]">crafted with technical depth</span></h2>
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00E699]">{projectsCopy.label}</span>
+            <h2 className="font-display text-3xl font-extrabold leading-tight md:text-5xl">{projectsCopy.title}</h2>
+            {projectsCopy.description ? <p className="max-w-xl text-sm leading-7 text-[#899E97]">{projectsCopy.description}</p> : null}
           </div>
         </div>
         <div className={`grid grid-cols-1 gap-8 ${config.layout === 'list' ? 'lg:grid-cols-1' : 'lg:grid-cols-12'}`}>
@@ -311,8 +319,9 @@ export function TemplateElena({ data }: { data: SiteData }) {
         <section id="videos" className="relative z-10 mx-auto max-w-7xl space-y-12 py-20">
           <div className="elena-reveal flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div className="space-y-4">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00E699]">[ MOTION PROOF ]</span>
-              <h2 className="font-display text-3xl font-extrabold leading-tight md:text-5xl">Project stories<br /><span className="font-light text-[#899E97]">shown through video</span></h2>
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00E699]">{videosCopy.label}</span>
+              <h2 className="font-display text-3xl font-extrabold leading-tight md:text-5xl">{videosCopy.title}</h2>
+              {videosCopy.description ? <p className="max-w-xl text-sm leading-7 text-[#899E97]">{videosCopy.description}</p> : null}
             </div>
           </div>
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
@@ -325,8 +334,9 @@ export function TemplateElena({ data }: { data: SiteData }) {
         <section id="awards" className="relative z-10 mx-auto max-w-7xl space-y-12 py-20">
           <div className="elena-reveal flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div className="space-y-4">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00E699]">[ RECOGNITION ]</span>
-              <h2 className="font-display text-3xl font-extrabold leading-tight md:text-5xl">Honors and signals<br /><span className="font-light text-[#899E97]">earned through the work</span></h2>
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00E699]">{awardsCopy.label}</span>
+              <h2 className="font-display text-3xl font-extrabold leading-tight md:text-5xl">{awardsCopy.title}</h2>
+              {awardsCopy.description ? <p className="max-w-xl text-sm leading-7 text-[#899E97]">{awardsCopy.description}</p> : null}
             </div>
           </div>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -338,8 +348,9 @@ export function TemplateElena({ data }: { data: SiteData }) {
       {config.showExperience && experiences.length ? (
         <section id="process" className="relative z-10 mx-auto max-w-7xl space-y-16 py-20">
           <div className="elena-reveal space-y-4 text-center">
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00E699]">[ THE PROCESS ]</span>
-            <h2 className="font-display text-3xl font-extrabold md:text-5xl">Experience built<br /><span className="font-light text-[#899E97]">around strategic goals</span></h2>
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00E699]">{experienceCopy.label}</span>
+            <h2 className="font-display text-3xl font-extrabold md:text-5xl">{experienceCopy.title}</h2>
+            {experienceCopy.description ? <p className="mx-auto max-w-xl text-sm leading-7 text-[#899E97]">{experienceCopy.description}</p> : null}
           </div>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             {experiences.slice(0, 4).map((experience, index) => (
@@ -359,8 +370,9 @@ export function TemplateElena({ data }: { data: SiteData }) {
       {config.showSkills && skills.length ? (
         <section id="skills" className="relative z-10 mx-auto max-w-7xl space-y-16 py-20">
           <div className="elena-reveal space-y-4 text-center">
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00E699]">[ SKILL STACK ]</span>
-            <h2 className="font-display text-3xl font-extrabold md:text-5xl">Capabilities shaped by<br /><span className="font-light text-[#899E97]">hands-on project work</span></h2>
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00E699]">{skillsCopy.label}</span>
+            <h2 className="font-display text-3xl font-extrabold md:text-5xl">{skillsCopy.title}</h2>
+            {skillsCopy.description ? <p className="mx-auto max-w-xl text-sm leading-7 text-[#899E97]">{skillsCopy.description}</p> : null}
           </div>
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {skills.map((skill, index) => (
@@ -388,9 +400,9 @@ export function TemplateElena({ data }: { data: SiteData }) {
         <TiltCard className="elena-reveal overflow-hidden p-8 md:p-16">
           <div className="relative z-10 grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
             <div className="space-y-6 lg:col-span-6">
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00E699]">[ CONTACT ]</span>
-              <h2 className="font-display text-3xl font-extrabold leading-tight md:text-5xl">Invest in the most<br /><span className="text-[#00E699]">important asset you have.</span></h2>
-              <p className="max-w-md text-sm leading-7 text-[#899E97]">If the work resonates, reach out for project collaboration, role opportunities, or a creative conversation.</p>
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#00E699]">{contactCopy.label}</span>
+              <h2 className="font-display text-3xl font-extrabold leading-tight md:text-5xl">{contactCopy.title}</h2>
+              {contactCopy.description ? <p className="max-w-md text-sm leading-7 text-[#899E97]">{contactCopy.description}</p> : null}
               <div className="flex flex-wrap gap-3">
                 {user.email ? <a href={`mailto:${user.email}`} className="inline-flex items-center gap-2 rounded-full bg-[#00E699] px-5 py-3 text-xs font-bold tracking-[0.16em] text-black"><Mail className="h-4 w-4" /> EMAIL</a> : null}
                 {user.location ? <span className="inline-flex items-center gap-2 rounded-full border border-white/10 px-5 py-3 text-xs text-[#899E97]"><MapPin className="h-4 w-4" /> {user.location}</span> : null}

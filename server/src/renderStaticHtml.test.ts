@@ -262,8 +262,8 @@ describe('renderStaticHtml', () => {
     expect(html).toContain(defaultSiteData.projects[0].title);
     expect(html).toContain('Experience Timeline');
     expect(html).toContain(defaultSiteData.experiences[0].position);
-    expect(html).toContain('Skill Matrix');
-    expect(html).toContain(`${defaultSiteData.skills[0].proficiency}/5`);
+    expect(html).not.toContain('Skill Matrix');
+    expect(html).toContain(defaultSiteData.skills[0].name);
     expect(html).toContain('tool-meter');
     expect(html).toContain('tool-orb');
     expect(html).toContain(defaultSiteData.awards[0].title);

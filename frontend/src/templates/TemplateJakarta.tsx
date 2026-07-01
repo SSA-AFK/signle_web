@@ -1,5 +1,6 @@
 import { ChevronRight, Layers, Mail, MapPin, Play, Sparkles, Star, User } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { getSectionCopy } from '@siteforge/shared';
 import type { Project, SiteData, VideoItem } from '@siteforge/shared';
 
 const fallbackHero = 'https://images.unsplash.com/photo-1517502884422-41eaaced0168?auto=format&fit=crop&w=1600&q=80';
@@ -173,6 +174,12 @@ export function TemplateJakarta({ data }: { data: SiteData }) {
     { label: 'Honors', value: awards.length, tone: 'bg-amber-400' }
   ];
   const navLinkClass = (sectionId: string) => `jakarta-nav-link ${activeSection === sectionId ? 'is-active' : ''}`;
+  const projectsCopy = getSectionCopy(data, 'projects', { label: 'Selected Work', title: 'A polished system for your best projects', description: 'Project images and gallery assets stay front and center, with featured work promoted into a wider card.' });
+  const skillsCopy = getSectionCopy(data, 'skills', { label: 'Tools and capabilities', title: 'Tools and capabilities' });
+  const videosCopy = getSectionCopy(data, 'videos', { label: 'Video Proof', title: 'Demos, reels, and walkthroughs', description: 'If a video is marked as featured, it expands into the main demo slot.' });
+  const experienceCopy = getSectionCopy(data, 'experience', { label: 'Experience', title: 'Experience becomes a guided story' });
+  const awardsCopy = getSectionCopy(data, 'awards', { label: 'Recognition', title: 'Honors and proof points' });
+  const contactCopy = getSectionCopy(data, 'contact', { label: 'Contact', title: 'Ready to start a new conversation?', description: 'Portfolio reviews, project collaboration, role opportunities, and creative conversations can all start here.' });
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#FAFAFC] font-sans text-slate-800">
@@ -258,7 +265,8 @@ export function TemplateJakarta({ data }: { data: SiteData }) {
       {data.config.showSkills && skills.length ? (
         <section id="skills" className="border-y border-slate-100 bg-white py-16">
           <div className="mx-auto max-w-7xl px-8">
-            <p className="mb-10 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">Tools and capabilities</p>
+            <p className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">{skillsCopy.label}</p>
+            <h2 className="mb-10 text-center text-3xl font-extrabold tracking-tight text-[#0B0F19]">{skillsCopy.title}</h2>
             <div className="grid grid-cols-1 overflow-hidden rounded-2xl border border-slate-100 bg-slate-50 sm:grid-cols-2 lg:grid-cols-5">
               {skills.slice(0, 10).map((skill) => (
                 <div key={skill.id || skill.name} className="border-b border-r border-slate-100 bg-white px-6 py-7 transition hover:bg-slate-50/50">
@@ -285,7 +293,7 @@ export function TemplateJakarta({ data }: { data: SiteData }) {
       {projects.length ? (
         <section id="projects" className="bg-[#FAFAFC] py-24">
           <div className="mx-auto max-w-7xl px-8">
-            <SectionTitle label="Selected Work" title="A polished system for your best projects" copy="Project images and gallery assets stay front and center, with featured work promoted into a wider card." />
+            <SectionTitle label={projectsCopy.label} title={projectsCopy.title} copy={projectsCopy.description} />
             <div className={`grid grid-cols-1 gap-8 ${data.config.layout === 'list' ? '' : 'md:grid-cols-2'}`}>
               {projects.map((project, index) => <ProjectCard key={project.id || project.slug} project={project} index={index} layout={data.config.layout} onPreview={(src, alt) => setPreviewImage({ src, alt })} />)}
             </div>
@@ -296,7 +304,7 @@ export function TemplateJakarta({ data }: { data: SiteData }) {
       {data.config.showVideos && videos.length ? (
         <section id="videos" className="bg-white py-24">
           <div className="mx-auto max-w-7xl px-8">
-            <SectionTitle label="Video Proof" title="Demos, reels, and walkthroughs" copy="If a video is marked as featured, it expands into the main demo slot." />
+            <SectionTitle label={videosCopy.label} title={videosCopy.title} copy={videosCopy.description} />
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               {videos.map((video, index) => <VideoCard key={video.id || video.videoUrl} video={video} index={index} />)}
             </div>
@@ -308,8 +316,9 @@ export function TemplateJakarta({ data }: { data: SiteData }) {
         <section className="bg-[#0B0F19] py-24 text-white">
           <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-8 lg:grid-cols-[0.9fr_1.1fr]">
             <div className="jakarta-reveal">
-              <span className="text-xs font-extrabold uppercase tracking-[0.24em] text-indigo-300">How It Works</span>
-              <h2 className="mt-4 text-4xl font-extrabold tracking-tight">Experience becomes a guided story</h2>
+              <span className="text-xs font-extrabold uppercase tracking-[0.24em] text-indigo-300">{experienceCopy.label}</span>
+              <h2 className="mt-4 text-4xl font-extrabold tracking-tight">{experienceCopy.title}</h2>
+              {experienceCopy.description ? <p className="mt-4 text-sm leading-7 text-slate-400">{experienceCopy.description}</p> : null}
               <div className="mt-8 space-y-3">
                 {stepCopy.map((step, index) => (
                   <button key={step.title} type="button" onClick={() => selectStep(index + 1)} className={`flex w-full items-center justify-between rounded-xl border-l-2 px-4 py-3 text-left text-sm font-semibold transition ${activeStep === index + 1 ? 'border-indigo-400 bg-white/5 text-white' : 'border-transparent text-slate-400 hover:bg-white/5'}`}>
@@ -353,7 +362,7 @@ export function TemplateJakarta({ data }: { data: SiteData }) {
       {data.config.showAwards && awards.length ? (
         <section id="awards" className="bg-[#FAFAFC] py-24">
           <div className="mx-auto max-w-7xl px-8">
-            <SectionTitle label="Recognition" title="Honors and proof points" />
+            <SectionTitle label={awardsCopy.label} title={awardsCopy.title} copy={awardsCopy.description} />
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
               {awards.map((award, index) => (
                 <article key={award.id || award.title} className="jakarta-reveal rounded-3xl border border-slate-100 bg-white p-8 shadow-sm" style={{ transitionDelay: `${(index % 2) * 90}ms` }}>
@@ -373,9 +382,9 @@ export function TemplateJakarta({ data }: { data: SiteData }) {
           <div className="jakarta-reveal overflow-hidden rounded-[2rem] bg-[#0B0F19] p-8 text-white md:p-12">
             <div className="grid gap-8 md:grid-cols-[1.2fr_.8fr] md:items-end">
               <div>
-                <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-indigo-300">Contact</p>
-                <h2 className="mt-4 text-4xl font-extrabold tracking-tight">Ready to start a new conversation?</h2>
-                <p className="mt-4 max-w-xl text-sm leading-7 text-slate-400">Portfolio reviews, project collaboration, role opportunities, and creative conversations can all start here.</p>
+                <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-indigo-300">{contactCopy.label}</p>
+                <h2 className="mt-4 text-4xl font-extrabold tracking-tight">{contactCopy.title}</h2>
+                {contactCopy.description ? <p className="mt-4 max-w-xl text-sm leading-7 text-slate-400">{contactCopy.description}</p> : null}
               </div>
               <div className="flex flex-col gap-3 md:items-end">
                 {data.user.email ? <a href={`mailto:${data.user.email}`} className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-3.5 text-xs font-bold text-white transition hover:bg-indigo-700"><Mail className="h-4 w-4" /> Contact Me</a> : null}
